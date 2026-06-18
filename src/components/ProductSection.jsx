@@ -12,6 +12,7 @@ import product8 from "../assets/product8.png";
 function ProductSection() {
   const products = [
     {
+        id: 1,
       image: product1,
       title: "Graphic Design",
       department: "English Department",
@@ -19,6 +20,7 @@ function ProductSection() {
       price: "$6.48",
     },
     {
+        id: 2,
       image: product2,
       title: "Graphic Design",
       department: "English Department",
@@ -26,6 +28,7 @@ function ProductSection() {
       price: "$6.48",
     },
     {
+        id: 3,
       image: product3,
       title: "Graphic Design",
       department: "English Department",
@@ -33,40 +36,45 @@ function ProductSection() {
       price: "$6.48",
     },
     {
-      image: product4,
-      title: "Graphic Design",
-      department: "English Department",
-      oldPrice: "$16.48",
-      price: "$6.48",
-    },
-    {
-      image: product5,
-      title: "Graphic Design",
-      department: "English Department",
-      oldPrice: "$16.48",
-      price: "$6.48",
-    },
-    {
-      image: product6,
-      title: "Graphic Design",
-      department: "English Department",
-      oldPrice: "$16.48",
-      price: "$6.48",
-    },
-    {
-      image: product7,
-      title: "Graphic Design",
-      department: "English Department",
-      oldPrice: "$16.48",
-      price: "$6.48",
-    },
-    {
-      image: product8,
-      title: "Graphic Design",
-      department: "English Department",
-      oldPrice: "$16.48",
-      price: "$6.48",
-    },
+  id: 4,
+  image: product4,
+  title: "Graphic Design",
+  department: "English Department",
+  oldPrice: "$16.48",
+  price: "$6.48",
+},
+{
+  id: 5,
+  image: product5,
+  title: "Graphic Design",
+  department: "English Department",
+  oldPrice: "$16.48",
+  price: "$6.48",
+},
+{
+  id: 6,
+  image: product6,
+  title: "Graphic Design",
+  department: "English Department",
+  oldPrice: "$16.48",
+  price: "$6.48",
+},
+{
+  id: 7,
+  image: product7,
+  title: "Graphic Design",
+  department: "English Department",
+  oldPrice: "$16.48",
+  price: "$6.48",
+},
+{
+  id: 8,
+  image: product8,
+  title: "Graphic Design",
+  department: "English Department",
+  oldPrice: "$16.48",
+  price: "$6.48",
+},
   ];
 
   return (
@@ -86,16 +94,17 @@ function ProductSection() {
       </div>
 
       <div className="max-w-[1124px] mx-auto flex flex-wrap justify-center gap-[30px]">
-        {products.map((product, index) => (
-          <ProductCard
-            key={index}
-            image={product.image}
-            title={product.title}
-            department={product.department}
-            oldPrice={product.oldPrice}
-            price={product.price}
-          />
-        ))}
+        {products.map((product) => (
+  <ProductCard
+    key={product.id}
+    id={product.id}
+    image={product.image}
+    title={product.title}
+    department={product.department}
+    oldPrice={product.oldPrice}
+    price={product.price}
+  />
+))}
       </div>
     </section>
   );

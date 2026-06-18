@@ -1,4 +1,6 @@
+import { Link } from "react-router-dom";
 function ProductCard({
+  id,
   image,
   title,
   department,
@@ -6,6 +8,8 @@ function ProductCard({
   price,
 }) {
   return (
+
+    <Link to={`/product/${id}`} className="block w-[239px] cursor-pointer">
     <div className="w-[239px]">
       <img
         src={image}
@@ -23,7 +27,7 @@ function ProductCard({
         </p>
 
         <div className="flex justify-center gap-2 mt-2 font-bold">
-          <span className="text-[#BDBDBD]">
+          <span className="text-[#BDBDBD] line-through">
             {oldPrice}
           </span>
 
@@ -31,8 +35,16 @@ function ProductCard({
             {price}
           </span>
         </div>
+
+        <div className="flex justify-center gap-2 mt-4">
+          <div className="w-4 h-4 rounded-full bg-[#23A6F0]"></div>
+          <div className="w-4 h-4 rounded-full bg-[#23856D]"></div>
+          <div className="w-4 h-4 rounded-full bg-[#E77C40]"></div>
+          <div className="w-4 h-4 rounded-full bg-[#252B42]"></div>
+        </div>
       </div>
     </div>
+    </Link>
   );
 }
 

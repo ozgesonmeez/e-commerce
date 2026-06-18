@@ -8,9 +8,17 @@ import {
   Menu,
 } from "lucide-react";
 import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 function Header() {
-  const navLinks = ["Home", "Shop", "About", "Blog", "Contact", "Pages"];
+  const navLinks = [
+    { label: "Home", path: "/" },
+    { label: "Shop", path: "/shop" },
+    { label: "About", path: "/about" },
+    { label: "Blog", path: "/blog" },
+    { label: "Contact", path: "/contact" },
+    { label: "Pages", path: "/" },
+  ];
 
   return (
     <header className="font-montserrat">
@@ -39,27 +47,31 @@ function Header() {
       </div>
 
       <div className="flex items-center h-[58px] px-[38px] bg-white">
-        <h1 className="text-[24px] leading-[32px] font-bold text-[#252B42] w-[187px]">
+        <Link
+          to="/"
+          className="text-[24px] leading-[32px] font-bold text-[#252B42] w-[187px]"
+        >
           Bandage
-        </h1>
+        </Link>
 
         <nav className="hidden md:flex gap-[15px]">
           {navLinks.map((link) => (
-            <a
-              key={link}
-              href="#"
+            <Link
+              key={link.label}
+              to={link.path}
               className="text-[14px] leading-[24px] font-bold text-[#737373]"
             >
-              {link}
-            </a>
+              {link.label}
+            </Link>
           ))}
         </nav>
 
         <div className="ml-auto hidden md:flex items-center gap-[15px] text-[#23A6F0] text-[14px] leading-[24px] font-bold">
-          <a href="#" className="flex items-center gap-[5px]">
+          <Link to="/login" className="flex items-center gap-[5px]">
             <User size={16} />
             Login / Register
-          </a>
+          </Link>
+
           <Search size={16} />
           <ShoppingCart size={16} />
           <Heart size={16} />
