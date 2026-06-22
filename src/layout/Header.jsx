@@ -68,9 +68,15 @@ function Header() {
 
         <div className="ml-auto hidden md:flex items-center gap-[15px] text-[#23A6F0] text-[14px] leading-[24px] font-bold">
           <Link to="/login" className="flex items-center gap-[5px]">
-            <User size={16} />
-            Login / Register
-          </Link>
+  <User size={16} />
+  Login
+</Link>
+
+<span>/</span>
+
+<Link to="/signup">
+  Register
+</Link>
 
           <Search size={16} />
           <ShoppingCart size={16} />
