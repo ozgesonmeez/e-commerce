@@ -1,4 +1,7 @@
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import Header from "./layout/Header";
 import Footer from "./layout/Footer";
 
@@ -26,6 +29,8 @@ function App() {
       </Switch>
 
       <Footer />
+
+      <ToastContainer position="top-right" autoClose={5000} />
     </BrowserRouter>
   );
 }
