@@ -2,7 +2,10 @@ import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+
 import api from "../api/api";
+import { fetchRoles } from "../store/actions/clientActions.js";
 
 function SignupPage() {
   const {
@@ -15,24 +18,20 @@ function SignupPage() {
       role: "customer",
     },
   });
+
   const history = useHistory();
+  const dispatch = useDispatch();
+
+  const roles = useSelector((state) => state.client.roles);
 
   const password = watch("password");
   const selectedRole = watch("role");
 
-  const [roles, setRoles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    api
-      .get("/roles")
-      .then((res) => {
-        setRoles(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+    dispatch(fetchRoles());
+  }, [dispatch]);
 
   const onSubmit = async (data) => {
     const selectedRoleObj = roles.find(
@@ -56,16 +55,20 @@ function SignupPage() {
     }
 
     try {
-  setIsLoading(true);
+      setIsLoading(true);
 
-  const response = await api.post("/signup", formData);
+      const response = await api.post("/signup", formData);
 
-  console.log("Signup success:", response.data);
-  toast.success("You need to click link in email to activate your account!");
-history.push("/login");
-} catch (error) {
+      console.log("Signup success:", response.data);
+
+      toast.success(
+        "You need to click link in email to activate your account!"
+      );
+
+      history.push("/login");
+    } catch (error) {
       console.log("Signup error:", error);
-     toast.error("Signup failed!");
+      toast.error("Signup failed!");
     } finally {
       setIsLoading(false);
     }
@@ -100,18 +103,18 @@ history.push("/login");
           </p>
         )}
 
-       <input
-  type="email"
-  placeholder="Email"
-  className="border p-3 rounded-md"
-  {...register("email", {
-    required: "Email is required",
-    pattern: {
-      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-      message: "Please enter a valid email",
-    },
-  })}
-/>
+        <input
+          type="email"
+          placeholder="Email"
+          className="border p-3 rounded-md"
+          {...register("email", {
+            required: "Email is required",
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: "Please enter a valid email",
+            },
+          })}
+        />
 
         {errors.email && (
           <p className="text-red-500 text-sm">
@@ -158,24 +161,24 @@ history.push("/login");
         )}
 
         <select
-  className="border p-3 rounded-md"
-  defaultValue="customer"
-  {...register("role", {
-    required: "Role is required",
-  })}
->
-        {roles
-  .filter((role) => role.code !== "admin")
-  .sort((a, b) => {
-    if (a.code === "customer") return -1;
-    if (b.code === "customer") return 1;
-    return 0;
-  })
-  .map((role) => (
-    <option key={role.id} value={role.code}>
-      {role.name}
-    </option>
-  ))}
+          className="border p-3 rounded-md"
+          defaultValue="customer"
+          {...register("role", {
+            required: "Role is required",
+          })}
+        >
+          {roles
+            .filter((role) => role.code !== "admin")
+            .sort((a, b) => {
+              if (a.code === "customer") return -1;
+              if (b.code === "customer") return 1;
+              return 0;
+            })
+            .map((role) => (
+              <option key={role.id} value={role.code}>
+                {role.name}
+              </option>
+            ))}
         </select>
 
         <p className="text-[#737373] text-sm">
