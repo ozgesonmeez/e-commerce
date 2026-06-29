@@ -9,8 +9,11 @@ import {
 } from "lucide-react";
 import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function Header() {
+  const user = useSelector((state) => state.client.user);
+
   const navLinks = [
     { label: "Home", path: "/" },
     { label: "Shop", path: "/shop" },
@@ -67,16 +70,23 @@ function Header() {
         </nav>
 
         <div className="ml-auto hidden md:flex items-center gap-[15px] text-[#23A6F0] text-[14px] leading-[24px] font-bold">
-          <Link to="/login" className="flex items-center gap-[5px]">
-  <User size={16} />
-  Login
-</Link>
+          {user?.name ? (
+            <div className="flex items-center gap-[5px]">
+              <User size={16} />
+              <span>{user.name}</span>
+            </div>
+          ) : (
+            <>
+              <Link to="/login" className="flex items-center gap-[5px]">
+                <User size={16} />
+                Login
+              </Link>
 
-<span>/</span>
+              <span>/</span>
 
-<Link to="/signup">
-  Register
-</Link>
+              <Link to="/signup">Register</Link>
+            </>
+          )}
 
           <Search size={16} />
           <ShoppingCart size={16} />

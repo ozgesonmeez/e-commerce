@@ -24,6 +24,7 @@ export const setLanguage = (language) => ({
   type: SET_LANGUAGE,
   payload: language,
 });
+
 export const fetchRoles = () => {
   return async (dispatch) => {
     try {
@@ -32,6 +33,20 @@ export const fetchRoles = () => {
       dispatch(setRoles(response.data));
     } catch (error) {
       console.error(error);
+    }
+  };
+};
+
+export const loginUser = (formData) => {
+  return async (dispatch) => {
+    try {
+      const response = await api.post("/login", formData);
+
+      dispatch(setUser(response.data));
+
+      return response.data;
+    } catch (error) {
+      throw error;
     }
   };
 };
