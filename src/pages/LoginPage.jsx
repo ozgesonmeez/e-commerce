@@ -29,9 +29,8 @@ function LoginPage() {
 
       const userData = await dispatch(loginUser(loginData));
 
-   if (data.rememberMe) {
+  if (data.rememberMe) {
   localStorage.setItem("token", userData.token);
-  localStorage.setItem("user", JSON.stringify(userData));
 }
 
       toast.success("Login successful!");

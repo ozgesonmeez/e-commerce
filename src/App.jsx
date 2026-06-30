@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setUser } from "./store/actions/clientActions.js";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -16,16 +15,15 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 
+import { verifyToken } from "./store/actions/clientActions.js";
+
 function App() {
   const dispatch = useDispatch();
 
-useEffect(() => {
-  const storedUser = localStorage.getItem("user");
+  useEffect(() => {
+    dispatch(verifyToken());
+  }, [dispatch]);
 
-  if (storedUser) {
-    dispatch(setUser(JSON.parse(storedUser)));
-  }
-}, [dispatch]);
   return (
     <BrowserRouter>
       <Header />
