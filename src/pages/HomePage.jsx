@@ -2,6 +2,9 @@ import { Link } from "react-router-dom";
 import EditorsPick from "../components/EditorsPick";
 import ProductSection from "../components/ProductSection";
 import heroImage from "../assets/hero.jpg";
+import VitaBanner from "../components/VitaBanner";
+import NeuralBanner from "../components/NeuralBanner";
+import FeaturedPosts from "../components/FeaturedPosts";
 
 function HomePage() {
   return (
@@ -35,8 +38,10 @@ function HomePage() {
       </section>
 
       <EditorsPick />
-
       <ProductSection />
+      <VitaBanner />
+      <NeuralBanner />
+      <FeaturedPosts />
     </>
   );
 }
