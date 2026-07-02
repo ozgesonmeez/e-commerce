@@ -9,6 +9,7 @@ export const SET_LIMIT = "SET_LIMIT";
 export const SET_OFFSET = "SET_OFFSET";
 export const SET_FILTER = "SET_FILTER";
 export const SET_SORT = "SET_SORT";
+export const SET_SELECTED_PRODUCT = "SET_SELECTED_PRODUCT";
 
 export const setCategories = (categories) => ({
   type: SET_CATEGORIES,
@@ -50,6 +51,11 @@ export const setSort = (sort) => ({
   payload: sort,
 });
 
+export const setSelectedProduct = (product) => ({
+  type: SET_SELECTED_PRODUCT,
+  payload: product,
+});
+
 export const fetchCategories = () => {
   return async (dispatch) => {
     try {
@@ -68,11 +74,11 @@ export const fetchProducts = (params = {}) => {
 
       const queryParams = new URLSearchParams();
 
-if (params.category) queryParams.append("category", params.category);
-if (params.filter) queryParams.append("filter", params.filter);
-if (params.sort) queryParams.append("sort", params.sort);
-if (params.limit) queryParams.append("limit", params.limit);
-if (params.offset !== undefined) queryParams.append("offset", params.offset);
+      if (params.category) queryParams.append("category", params.category);
+      if (params.filter) queryParams.append("filter", params.filter);
+      if (params.sort) queryParams.append("sort", params.sort);
+      if (params.limit) queryParams.append("limit", params.limit);
+      if (params.offset !== undefined) queryParams.append("offset", params.offset);
 
       const queryString = queryParams.toString();
       const url = queryString ? `/products?${queryString}` : "/products";
@@ -84,6 +90,22 @@ if (params.offset !== undefined) queryParams.append("offset", params.offset);
       dispatch(setFetchState(FETCH_STATES.FETCHED));
     } catch (error) {
       console.error("Fetch products error:", error);
+      dispatch(setFetchState(FETCH_STATES.FAILED));
+    }
+  };
+};
+
+export const fetchProduct = (productId) => {
+  return async (dispatch) => {
+    try {
+      dispatch(setFetchState(FETCH_STATES.FETCHING));
+
+      const response = await api.get(`/products/${productId}`);
+
+      dispatch(setSelectedProduct(response.data));
+      dispatch(setFetchState(FETCH_STATES.FETCHED));
+    } catch (error) {
+      console.error("Fetch product error:", error);
       dispatch(setFetchState(FETCH_STATES.FAILED));
     }
   };

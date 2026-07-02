@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+
 function ProductCard({
   id,
   image,
@@ -6,11 +7,20 @@ function ProductCard({
   department,
   oldPrice,
   price,
+  gender = "kadin",
+  categoryName = "urun",
+  categoryId = 1,
 }) {
-  return (
+  const slug = title
+    ?.toLowerCase()
+    .replaceAll(" ", "-")
+    .replace(/[^\w-]+/g, "");
 
-    <Link to={`/product/${id}`} className="block w-[239px] cursor-pointer">
-    <div className="w-[239px]">
+  return (
+    <Link
+      to={`/shop/${gender}/${categoryName}/${categoryId}/${slug}/${id}`}
+      className="block w-[239px] cursor-pointer"
+    >
       <img
         src={image}
         alt={title}
@@ -18,22 +28,15 @@ function ProductCard({
       />
 
       <div className="text-center py-6">
-        <h3 className="text-[#252B42] text-[16px] font-bold">
-          {title}
-        </h3>
+        <h3 className="text-[#252B42] text-[16px] font-bold">{title}</h3>
 
         <p className="text-[#737373] text-[14px] font-bold mt-2">
           {department}
         </p>
 
         <div className="flex justify-center gap-2 mt-2 font-bold">
-          <span className="text-[#BDBDBD] line-through">
-            {oldPrice}
-          </span>
-
-          <span className="text-[#23856D]">
-            {price}
-          </span>
+          <span className="text-[#BDBDBD] line-through">{oldPrice}</span>
+          <span className="text-[#23856D]">{price}</span>
         </div>
 
         <div className="flex justify-center gap-2 mt-4">
@@ -43,7 +46,6 @@ function ProductCard({
           <div className="w-4 h-4 rounded-full bg-[#252B42]"></div>
         </div>
       </div>
-    </div>
     </Link>
   );
 }

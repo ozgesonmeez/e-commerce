@@ -1,113 +1,48 @@
-import { useParams, Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useParams, Link, useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Heart, ShoppingCart, Eye } from "lucide-react";
+
 import ProductSection from "../components/ProductSection";
-import product1 from "../assets/product1.png";
-import product2 from "../assets/product2.png";
-import product3 from "../assets/product3.png";
-import product4 from "../assets/product4.png";
-import product5 from "../assets/product5.png";
-import product6 from "../assets/product6.png";
-import product7 from "../assets/product7.png";
-import product8 from "../assets/product8.png";
+import { fetchProduct } from "../store/actions/productActions.js";
 
 function ProductDetailPage() {
   const { productId } = useParams();
+  const dispatch = useDispatch();
+  const history = useHistory();
 
-  const mockProducts = [
-    {
-      id: 1,
-      name: "Graphic Design",
-      description:
-        "Met minim Mollie non desert Alamo est sit cliquey dolor do met sent. RELIT official consequent door ENIM RELIT Mollie.",
-      price: "$6.48",
-      oldPrice: "$16.48",
-      image: product1,
-    },
-    {
-      id: 2,
-      name: "Graphic Design",
-      description:
-        "Met minim Mollie non desert Alamo est sit cliquey dolor do met sent. RELIT official consequent door ENIM RELIT Mollie.",
-      price: "$6.48",
-      oldPrice: "$16.48",
-      image: product2,
-    },
-    {
-      id: 3,
-      name: "Graphic Design",
-      description:
-        "Met minim Mollie non desert Alamo est sit cliquey dolor do met sent. RELIT official consequent door ENIM RELIT Mollie.",
-      price: "$6.48",
-      oldPrice: "$16.48",
-      image: product3,
-    },
-    {
-      id: 4,
-      name: "Graphic Design",
-      description:
-        "Met minim Mollie non desert Alamo est sit cliquey dolor do met sent. RELIT official consequent door ENIM RELIT Mollie.",
-      price: "$6.48",
-      oldPrice: "$16.48",
-      image: product4,
-    },
-    {
-      id: 5,
-      name: "Graphic Design",
-      description:
-        "Met minim Mollie non desert Alamo est sit cliquey dolor do met sent. RELIT official consequent door ENIM RELIT Mollie.",
-      price: "$6.48",
-      oldPrice: "$16.48",
-      image: product5,
-    },
-    {
-      id: 6,
-      name: "Graphic Design",
-      description:
-        "Met minim Mollie non desert Alamo est sit cliquey dolor do met sent. RELIT official consequent door ENIM RELIT Mollie.",
-      price: "$6.48",
-      oldPrice: "$16.48",
-      image: product6,
-    },
-    {
-      id: 7,
-      name: "Graphic Design",
-      description:
-        "Met minim Mollie non desert Alamo est sit cliquey dolor do met sent. RELIT official consequent door ENIM RELIT Mollie.",
-      price: "$6.48",
-      oldPrice: "$16.48",
-      image: product7,
-    },
-    {
-      id: 8,
-      name: "Graphic Design",
-      description:
-        "Met minim Mollie non desert Alamo est sit cliquey dolor do met sent. RELIT official consequent door ENIM RELIT Mollie.",
-      price: "$6.48",
-      oldPrice: "$16.48",
-      image: product8,
-    },
-  ];
+  const product = useSelector((state) => state.product.selectedProduct);
+  const fetchState = useSelector((state) => state.product.fetchState);
 
-  const product = mockProducts.find(
-    (item) => item.id === Number(productId)
-  );
+  useEffect(() => {
+    dispatch(fetchProduct(productId));
+  }, [dispatch, productId]);
 
-  if (!product) {
+  if (fetchState === "FETCHING") {
+    return (
+      <main className="max-w-[1050px] mx-auto px-4 py-20">
+        <p className="text-center text-[#737373] font-bold">
+          Loading product...
+        </p>
+      </main>
+    );
+  }
+
+  if (fetchState === "FAILED") {
     return (
       <main className="max-w-[1050px] mx-auto px-4 py-20">
         <h1 className="text-[32px] font-bold text-[#252B42]">
           Product Not Found
         </h1>
 
-        <Link
-          to="/shop"
-          className="inline-block mt-6 text-[#23A6F0] font-bold"
-        >
+        <Link to="/shop" className="inline-block mt-6 text-[#23A6F0] font-bold">
           ← Back to Shop
         </Link>
       </main>
     );
   }
+
+  const imageUrl = product?.images?.[0]?.url;
 
   return (
     <main className="bg-white">
@@ -122,32 +57,36 @@ function ProductDetailPage() {
           </Link>
         </div>
 
+        <button
+          onClick={() => history.goBack()}
+          className="mb-8 text-[#23A6F0] font-bold"
+        >
+          ← Back
+        </button>
+
         <div className="flex flex-col md:flex-row gap-12">
           <div className="flex-1">
             <div className="bg-[#FAFAFA] flex justify-center items-center p-4 h-[450px]">
               <img
-                src={product.image}
+                src={imageUrl}
                 alt={product.name}
                 className="max-w-full max-h-full object-contain"
               />
             </div>
 
             <div className="flex gap-4 mt-5">
-              <div className="w-[100px] h-[75px] border border-[#DDDDDD] p-1">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-full object-contain"
-                />
-              </div>
-
-              <div className="w-[100px] h-[75px] border border-[#DDDDDD] p-1">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-full object-contain"
-                />
-              </div>
+              {product?.images?.map((image) => (
+                <div
+                  key={image.index}
+                  className="w-[100px] h-[75px] border border-[#DDDDDD] p-1"
+                >
+                  <img
+                    src={image.url}
+                    alt={product.name}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              ))}
             </div>
           </div>
 
@@ -157,29 +96,21 @@ function ProductDetailPage() {
             </h1>
 
             <div className="flex items-center gap-3 mt-4">
-              <div className="text-[#F3CD03] text-[18px]">
-                ★★★★★
-              </div>
+              <div className="text-[#F3CD03] text-[18px]">★★★★★</div>
 
               <p className="text-[#737373] text-[14px] font-bold">
-                10 Reviews
+                {product.rating} Rating
               </p>
             </div>
 
             <div className="flex gap-3 mt-5 text-[24px] font-bold">
-              <span className="text-[#BDBDBD] line-through">
-                {product.oldPrice}
-              </span>
-
-              <span className="text-[#252B42]">
-                {product.price}
-              </span>
+              <span className="text-[#252B42]">${product.price}</span>
             </div>
 
             <p className="mt-2 text-[#737373] text-[14px] font-bold">
               Availability :
               <span className="text-[#23A6F0] ml-2">
-                In Stock
+                {product.stock > 0 ? "In Stock" : "Out of Stock"}
               </span>
             </p>
 
@@ -231,54 +162,19 @@ function ProductDetailPage() {
             </span>
           </div>
 
-          <div className="mt-12 flex flex-col md:flex-row gap-10">
-            <div className="flex-1">
-              <h3 className="text-[#252B42] text-[24px] font-bold">
-                the quick fox jumps over
-              </h3>
+          <div className="mt-12">
+            <h3 className="text-[#252B42] text-[24px] font-bold">
+              Product Description
+            </h3>
 
-              <p className="mt-4 text-[#737373] text-[14px] leading-[22px]">
-                Met minim Mollie non desert Alamo est sit cliquey dolor
-                do met sent. RELIT official consequent door ENIM RELIT
-                Mollie.
-              </p>
-
-              <p className="mt-4 text-[#737373] text-[14px] leading-[22px]">
-                Met minim Mollie non desert Alamo est sit cliquey dolor
-                do met sent. RELIT official consequent door ENIM RELIT
-                Mollie.
-              </p>
-            </div>
-
-            <div className="flex-1">
-              <h3 className="text-[#252B42] text-[24px] font-bold">
-                the quick fox jumps over
-              </h3>
-
-              <ul className="mt-4 space-y-3 text-[#737373] text-[14px] font-bold">
-                <li>{">"} the quick fox jumps over the lazy dog</li>
-                <li>{">"} the quick fox jumps over the lazy dog</li>
-                <li>{">"} the quick fox jumps over the lazy dog</li>
-                <li>{">"} the quick fox jumps over the lazy dog</li>
-              </ul>
-            </div>
-
-            <div className="flex-1">
-              <h3 className="text-[#252B42] text-[24px] font-bold">
-                the quick fox jumps over
-              </h3>
-
-              <ul className="mt-4 space-y-3 text-[#737373] text-[14px] font-bold">
-                <li>{">"} the quick fox jumps over the lazy dog</li>
-                <li>{">"} the quick fox jumps over the lazy dog</li>
-                <li>{">"} the quick fox jumps over the lazy dog</li>
-                <li>{">"} the quick fox jumps over the lazy dog</li>
-              </ul>
-            </div>
+            <p className="mt-4 text-[#737373] text-[14px] leading-[22px]">
+              {product.description}
+            </p>
           </div>
         </div>
       </section>
-          <ProductSection />
+
+      <ProductSection />
     </main>
   );
 }

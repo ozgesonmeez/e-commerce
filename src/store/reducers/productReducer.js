@@ -7,12 +7,14 @@ import {
   SET_OFFSET,
   SET_FILTER,
   SET_SORT,
+  SET_SELECTED_PRODUCT,
 } from "../actions/productActions.js";
 import { FETCH_STATES } from "../actions/globalActions.js";
 
 const initialState = {
   categories: [],
   productList: [],
+  selectedProduct: {},
   total: 0,
   fetchState: FETCH_STATES.NOT_FETCHED,
   limit: 25,
@@ -28,6 +30,9 @@ function productReducer(state = initialState, action) {
 
     case SET_PRODUCT_LIST:
       return { ...state, productList: action.payload };
+
+    case SET_SELECTED_PRODUCT:
+      return { ...state, selectedProduct: action.payload };
 
     case SET_TOTAL:
       return { ...state, total: action.payload };

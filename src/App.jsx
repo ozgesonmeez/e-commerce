@@ -30,8 +30,15 @@ function App() {
 
       <Switch>
         <Route exact path="/" component={HomePage} />
+
+        <Route
+          path="/shop/:gender/:categoryName/:categoryId/:productNameSlug/:productId"
+          component={ProductDetailPage}
+        />
+
+        <Route path="/shop/:gender/:categoryName/:categoryId" component={ShopPage} />
         <Route exact path="/shop" component={ShopPage} />
-<Route path="/shop/:gender/:categoryName/:categoryId" component={ShopPage} />
+
         <Route path="/about" component={AboutPage} />
         <Route path="/contact" component={ContactPage} />
         <Route path="/login" component={LoginPage} />
@@ -40,7 +47,6 @@ function App() {
       </Switch>
 
       <Footer />
-
       <ToastContainer position="top-right" autoClose={5000} />
     </BrowserRouter>
   );
