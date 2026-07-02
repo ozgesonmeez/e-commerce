@@ -1,10 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 import ProductCard from "../components/ProductCard";
 import CategoryCard from "../components/CategoryCard";
 
-import { fetchProducts } from "../store/actions/productActions.js";
+import {
+  fetchProducts,
+  setFilter,
+  setSort,
+} from "../store/actions/productActions.js";
 
 import cloths1 from "../assets/cloths1.png";
 import cloths2 from "../assets/cloths2.png";
@@ -14,22 +19,35 @@ import cloths5 from "../assets/cloths5.png";
 
 function ShopPage() {
   const dispatch = useDispatch();
+  const { categoryId } = useParams();
 
   const productList = useSelector((state) => state.product.productList);
   const total = useSelector((state) => state.product.total);
   const fetchState = useSelector((state) => state.product.fetchState);
+  const filter = useSelector((state) => state.product.filter);
+  const sort = useSelector((state) => state.product.sort);
 
-  const categories = [
-    cloths1,
-    cloths2,
-    cloths3,
-    cloths4,
-    cloths5,
-  ];
+  const [filterInput, setFilterInput] = useState(filter);
+
+  const categories = [cloths1, cloths2, cloths3, cloths4, cloths5];
 
   useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+    dispatch(
+      fetchProducts({
+        category: categoryId,
+        filter,
+        sort,
+      })
+    );
+  }, [dispatch, categoryId, filter, sort]);
+
+  const handleFilter = () => {
+    dispatch(setFilter(filterInput));
+  };
+
+  const handleSortChange = (e) => {
+    dispatch(setSort(e.target.value));
+  };
 
   return (
     <main className="bg-[#FAFAFA]">
@@ -62,14 +80,31 @@ function ShopPage() {
               Showing all {total} results
             </p>
 
-            <div className="flex items-center gap-3">
-              <select className="border border-[#DDDDDD] text-[#737373] text-[14px] px-4 py-3 rounded-[5px]">
-                <option>Popularity</option>
-                <option>Price: Low to High</option>
-                <option>Price: High to Low</option>
+            <div className="flex flex-col md:flex-row items-center gap-3">
+              <input
+                type="text"
+                placeholder="Search"
+                value={filterInput}
+                onChange={(e) => setFilterInput(e.target.value)}
+                className="border border-[#DDDDDD] text-[#737373] text-[14px] px-4 py-3 rounded-[5px]"
+              />
+
+              <select
+                value={sort}
+                onChange={handleSortChange}
+                className="border border-[#DDDDDD] text-[#737373] text-[14px] px-4 py-3 rounded-[5px]"
+              >
+                <option value="">Sort</option>
+                <option value="price:asc">Price: Low to High</option>
+                <option value="price:desc">Price: High to Low</option>
+                <option value="rating:asc">Rating: Low to High</option>
+                <option value="rating:desc">Rating: High to Low</option>
               </select>
 
-              <button className="bg-[#23A6F0] text-white text-[14px] font-bold px-5 py-3 rounded-[5px]">
+              <button
+                onClick={handleFilter}
+                className="bg-[#23A6F0] text-white text-[14px] font-bold px-5 py-3 rounded-[5px]"
+              >
                 Filter
               </button>
             </div>

@@ -8,6 +8,7 @@ export const SET_FETCH_STATE = "SET_FETCH_STATE";
 export const SET_LIMIT = "SET_LIMIT";
 export const SET_OFFSET = "SET_OFFSET";
 export const SET_FILTER = "SET_FILTER";
+export const SET_SORT = "SET_SORT";
 
 export const setCategories = (categories) => ({
   type: SET_CATEGORIES,
@@ -44,11 +45,15 @@ export const setFilter = (filter) => ({
   payload: filter,
 });
 
+export const setSort = (sort) => ({
+  type: SET_SORT,
+  payload: sort,
+});
+
 export const fetchCategories = () => {
   return async (dispatch) => {
     try {
       const response = await api.get("/categories");
-
       dispatch(setCategories(response.data));
     } catch (error) {
       console.error("Fetch categories error:", error);
@@ -56,12 +61,21 @@ export const fetchCategories = () => {
   };
 };
 
-export const fetchProducts = () => {
+export const fetchProducts = (params = {}) => {
   return async (dispatch) => {
     try {
       dispatch(setFetchState(FETCH_STATES.FETCHING));
 
-      const response = await api.get("/products");
+      const queryParams = new URLSearchParams();
+
+      if (params.category) queryParams.append("category", params.category);
+      if (params.filter) queryParams.append("filter", params.filter);
+      if (params.sort) queryParams.append("sort", params.sort);
+
+      const queryString = queryParams.toString();
+      const url = queryString ? `/products?${queryString}` : "/products";
+
+      const response = await api.get(url);
 
       dispatch(setProductList(response.data.products));
       dispatch(setTotal(response.data.total));
