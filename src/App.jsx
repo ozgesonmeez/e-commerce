@@ -14,6 +14,7 @@ import ContactPage from "./pages/ContactPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
+import CartPage from "./pages/CartPage";
 
 import { verifyToken } from "./store/actions/clientActions.js";
 
@@ -44,6 +45,9 @@ function App() {
         <Route path="/login" component={LoginPage} />
         <Route path="/signup" component={SignupPage} />
         <Route path="/product/:productId" component={ProductDetailPage} />
+        <Route exact path="/cart">
+  <CartPage />
+</Route>
       </Switch>
 
       <Footer />

@@ -258,10 +258,14 @@ function Header() {
         </div>
 
         <div className="ml-auto flex md:hidden items-center gap-6 text-[#252B42]">
-          <Search size={20} />
-          <ShoppingCart size={20} />
-          <Menu size={24} />
-        </div>
+  <Search size={20} />
+
+  <Link to="/cart">
+    <ShoppingCart size={20} />
+  </Link>
+
+  <Menu size={24} />
+</div>
       </div>
     </header>
   );

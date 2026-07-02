@@ -4,27 +4,9 @@ import post3 from "../assets/post3.png";
 
 function FeaturedPosts() {
   const posts = [
-    {
-      id: 1,
-      image: post1,
-      title: "Loudest à la Madison #1 (L'integral)",
-      description:
-        "We focus on ergonomics and meeting you where you work. It's only a keystroke away.",
-    },
-    {
-      id: 2,
-      image: post2,
-      title: "Loudest à la Madison #1 (L'integral)",
-      description:
-        "We focus on ergonomics and meeting you where you work. It's only a keystroke away.",
-    },
-    {
-      id: 3,
-      image: post3,
-      title: "Loudest à la Madison #1 (L'integral)",
-      description:
-        "We focus on ergonomics and meeting you where you work. It's only a keystroke away.",
-    },
+    { id: 1, image: post1 },
+    { id: 2, image: post2 },
+    { id: 3, image: post3 },
   ];
 
   return (
@@ -47,14 +29,11 @@ function FeaturedPosts() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-[30px]">
           {posts.map((post) => (
-            <div
-              key={post.id}
-              className="bg-white shadow-md"
-            >
+            <div key={post.id} className="bg-white shadow-md">
               <div className="relative">
                 <img
                   src={post.image}
-                  alt={post.title}
+                  alt="Featured Post"
                   className="w-full h-[300px] object-cover"
                 />
 
@@ -70,12 +49,14 @@ function FeaturedPosts() {
                   <span className="text-[#737373]">New</span>
                 </div>
 
-                <h3 className="text-[#252B42] text-[20px] leading-[30px] font-bold">
-                  {post.title}
+                <h3 className="text-[#252B42] text-[20px] leading-[30px]">
+                  Loudest à la Madison #1 <br />
+                  {"(L'integral)"}
                 </h3>
 
                 <p className="text-[#737373] text-[14px] leading-[20px] mt-3">
-                  {post.description}
+                  We focus on ergonomics and meeting you where you work.
+                  It&apos;s only a keystroke away.
                 </p>
 
                 <div className="flex justify-between text-[#737373] text-[12px] mt-6">

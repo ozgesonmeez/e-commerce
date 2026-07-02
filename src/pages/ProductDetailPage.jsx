@@ -37,20 +37,30 @@ function ProductDetailPage() {
   }
 
   if (fetchState === "FAILED") {
-    return (
-      <main className="max-w-[1050px] mx-auto px-4 py-20">
-        <h1 className="text-[32px] font-bold text-[#252B42]">
-          Product Not Found
-        </h1>
+  return (
+    <main className="max-w-[1050px] mx-auto px-4 py-20">
+      <h1 className="text-[32px] font-bold text-[#252B42]">
+        Product Not Found
+      </h1>
 
-        <Link to="/shop" className="inline-block mt-6 text-[#23A6F0] font-bold">
-          ← Back to Shop
-        </Link>
-      </main>
-    );
-  }
+      <Link to="/shop" className="inline-block mt-6 text-[#23A6F0] font-bold">
+        ← Back to Shop
+      </Link>
+    </main>
+  );
+}
 
-  const imageUrl = product?.images?.[0]?.url;
+if (!product || !product.id) {
+  return (
+    <main className="max-w-[1050px] mx-auto px-4 py-20">
+      <p className="text-center text-[#737373] font-bold">
+        Loading product...
+      </p>
+    </main>
+  );
+}
+
+const imageUrl = product?.images?.[0]?.url;
 
   return (
     <main className="bg-white">
