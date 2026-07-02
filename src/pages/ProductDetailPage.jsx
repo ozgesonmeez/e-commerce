@@ -5,6 +5,8 @@ import { Heart, ShoppingCart, Eye } from "lucide-react";
 
 import ProductSection from "../components/ProductSection";
 import { fetchProduct } from "../store/actions/productActions.js";
+import { addToCart } from "../store/actions/shoppingCartActions.js";
+import { toast } from "react-toastify";
 
 function ProductDetailPage() {
   const { productId } = useParams();
@@ -13,10 +15,16 @@ function ProductDetailPage() {
 
   const product = useSelector((state) => state.product.selectedProduct);
   const fetchState = useSelector((state) => state.product.fetchState);
+  
 
   useEffect(() => {
     dispatch(fetchProduct(productId));
   }, [dispatch, productId]);
+
+  const handleAddToCart = () => {
+  dispatch(addToCart(product));
+  toast.success("Product added to cart!");
+};
 
   if (fetchState === "FETCHING") {
     return (
@@ -127,9 +135,12 @@ function ProductDetailPage() {
               </div>
 
               <div className="flex items-center gap-3 mt-8">
-                <button className="bg-[#23A6F0] text-white text-[14px] font-bold px-6 py-3 rounded-[5px]">
-                  Select Options
-                </button>
+                <button
+  onClick={handleAddToCart}
+  className="bg-[#23A6F0] text-white text-[14px] font-bold px-6 py-3 rounded-[5px]"
+>
+ Sepete Ekle
+</button>
 
                 <button className="w-10 h-10 rounded-full border border-[#E8E8E8] flex items-center justify-center">
                   <Heart size={18} />

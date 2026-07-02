@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Search,
   ShoppingCart,
@@ -15,9 +15,13 @@ import { fetchCategories } from "../store/actions/productActions.js";
 
 function Header() {
   const dispatch = useDispatch();
+  const [showCart, setShowCart] = useState(false);
 
   const user = useSelector((state) => state.client.user);
   const categories = useSelector((state) => state.product.categories);
+  const cart = useSelector((state) => state.shoppingCart.cart);
+
+  const cartCount = cart.reduce((total, item) => total + item.count, 0);
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -46,7 +50,6 @@ function Header() {
   };
 
   const navLinks = [
-    { label: "Home", path: "/" },
     { label: "About", path: "/about" },
     { label: "Blog", path: "/blog" },
     { label: "Contact", path: "/contact" },
@@ -138,7 +141,7 @@ function Header() {
             </div>
           </div>
 
-          {navLinks.slice(1).map((link) => (
+          {navLinks.map((link) => (
             <Link
               key={link.label}
               to={link.path}
@@ -169,7 +172,88 @@ function Header() {
           )}
 
           <Search size={16} />
-          <ShoppingCart size={16} />
+
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowCart(!showCart)}
+              className="relative cursor-pointer"
+            >
+              <ShoppingCart size={16} />
+
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-[#E77C40] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </button>
+
+            {showCart && (
+              <div className="absolute right-0 top-8 w-[340px] bg-white border border-[#E6E6E6] rounded-lg shadow-lg p-4 z-50 text-[#252B42]">
+                <h3 className="text-[16px] font-bold mb-4">
+                  Shopping Cart
+                </h3>
+
+                {cart.length === 0 ? (
+                  <p className="text-[#737373] text-[14px]">
+                    Your cart is empty.
+                  </p>
+                ) : (
+                  <div className="flex flex-col gap-4">
+                    {cart.map((item) => (
+                      <div
+                        key={item.product.id}
+                        className="flex gap-3 border-b border-[#E6E6E6] pb-3"
+                      >
+                        <img
+                          src={item.product.images?.[0]?.url}
+                          alt={item.product.name}
+                          className="w-[60px] h-[70px] object-cover"
+                        />
+
+                        <div className="flex-1">
+                          <p className="text-[14px] font-bold text-[#252B42] line-clamp-2">
+                            {item.product.name}
+                          </p>
+
+                          <p className="text-[#737373] text-[12px] mt-1">
+                            Qty: {item.count}
+                          </p>
+
+                          <p className="text-[#23856D] text-[14px] font-bold mt-1">
+                            ${item.product.price}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+
+                    <div className="flex justify-between text-[14px] font-bold pt-2">
+                      <span>Total</span>
+                      <span className="text-[#23856D]">
+                        $
+                        {cart
+                          .reduce(
+                            (total, item) =>
+                              total + item.product.price * item.count,
+                            0
+                          )
+                          .toFixed(2)}
+                      </span>
+                    </div>
+
+                    <Link
+                      to="/cart"
+                      onClick={() => setShowCart(false)}
+                      className="block text-center bg-[#23A6F0] text-white py-3 rounded-[5px] mt-2"
+                    >
+                      Go to Cart
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
           <Heart size={16} />
         </div>
 
