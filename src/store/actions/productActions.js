@@ -1,4 +1,5 @@
 import api from "../../api/api.js";
+import { FETCH_STATES } from "./globalActions.js";
 
 export const SET_CATEGORIES = "SET_CATEGORIES";
 export const SET_PRODUCT_LIST = "SET_PRODUCT_LIST";
@@ -51,6 +52,23 @@ export const fetchCategories = () => {
       dispatch(setCategories(response.data));
     } catch (error) {
       console.error("Fetch categories error:", error);
+    }
+  };
+};
+
+export const fetchProducts = () => {
+  return async (dispatch) => {
+    try {
+      dispatch(setFetchState(FETCH_STATES.FETCHING));
+
+      const response = await api.get("/products");
+
+      dispatch(setProductList(response.data.products));
+      dispatch(setTotal(response.data.total));
+      dispatch(setFetchState(FETCH_STATES.FETCHED));
+    } catch (error) {
+      console.error("Fetch products error:", error);
+      dispatch(setFetchState(FETCH_STATES.FAILED));
     }
   };
 };

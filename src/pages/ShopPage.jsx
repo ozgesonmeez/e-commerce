@@ -1,5 +1,10 @@
-import ProductSection from "../components/ProductSection";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import ProductCard from "../components/ProductCard";
 import CategoryCard from "../components/CategoryCard";
+
+import { fetchProducts } from "../store/actions/productActions.js";
 
 import cloths1 from "../assets/cloths1.png";
 import cloths2 from "../assets/cloths2.png";
@@ -8,6 +13,12 @@ import cloths4 from "../assets/cloths4.png";
 import cloths5 from "../assets/cloths5.png";
 
 function ShopPage() {
+  const dispatch = useDispatch();
+
+  const productList = useSelector((state) => state.product.productList);
+  const total = useSelector((state) => state.product.total);
+  const fetchState = useSelector((state) => state.product.fetchState);
+
   const categories = [
     cloths1,
     cloths2,
@@ -16,9 +27,12 @@ function ShopPage() {
     cloths5,
   ];
 
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
   return (
     <main className="bg-[#FAFAFA]">
-      {/* Shop Header */}
       <section className="max-w-[1050px] mx-auto px-4 py-10">
         <div className="flex justify-between items-center">
           <h1 className="text-[24px] font-bold text-[#252B42]">
@@ -33,24 +47,19 @@ function ShopPage() {
         </div>
       </section>
 
-      {/* Categories */}
       <section className="max-w-[1050px] mx-auto px-4 pb-12">
         <div className="flex flex-wrap justify-center gap-[15px]">
           {categories.map((image, index) => (
-            <CategoryCard
-              key={index}
-              image={image}
-            />
+            <CategoryCard key={index} image={image} />
           ))}
         </div>
       </section>
 
-      {/* Filter Bar */}
       <section className="bg-white">
         <div className="max-w-[1050px] mx-auto px-4 py-6">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-[#737373] text-[14px] font-bold">
-              Showing all 12 results
+              Showing all {total} results
             </p>
 
             <div className="flex items-center gap-3">
@@ -68,8 +77,37 @@ function ShopPage() {
         </div>
       </section>
 
-      {/* Products */}
-      <ProductSection />
+      <section className="bg-white py-12">
+        <div className="max-w-[1050px] mx-auto px-4">
+          {fetchState === "FETCHING" && (
+            <p className="text-center text-[#737373] font-bold">
+              Loading products...
+            </p>
+          )}
+
+          {fetchState === "FAILED" && (
+            <p className="text-center text-red-500 font-bold">
+              Products could not be loaded.
+            </p>
+          )}
+
+          {fetchState === "FETCHED" && (
+            <div className="flex flex-wrap justify-center gap-[30px]">
+              {productList.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  id={product.id}
+                  image={product.images?.[0]?.url}
+                  title={product.name}
+                  department={product.category?.title || "Product"}
+                  oldPrice={`$${product.price}`}
+                  price={`$${product.price}`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
     </main>
   );
 }
