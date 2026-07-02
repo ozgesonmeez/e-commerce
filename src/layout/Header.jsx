@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   Search,
   ShoppingCart,
@@ -9,14 +10,43 @@ import {
 } from "lucide-react";
 import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCategories } from "../store/actions/productActions.js";
 
 function Header() {
+  const dispatch = useDispatch();
+
   const user = useSelector((state) => state.client.user);
+  const categories = useSelector((state) => state.product.categories);
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
+  const slugify = (text) =>
+    text
+      .toLowerCase()
+      .replaceAll("ı", "i")
+      .replaceAll("ğ", "g")
+      .replaceAll("ü", "u")
+      .replaceAll("ş", "s")
+      .replaceAll("ö", "o")
+      .replaceAll("ç", "c")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+
+  const womenCategories = categories.filter((category) => category.gender === "k");
+  const menCategories = categories.filter((category) => category.gender === "e");
+
+  const createCategoryPath = (category) => {
+    const genderPath = category.gender === "k" ? "kadin" : "erkek";
+    const categoryName = slugify(category.title);
+
+    return `/shop/${genderPath}/${categoryName}/${category.id}`;
+  };
 
   const navLinks = [
     { label: "Home", path: "/" },
-    { label: "Shop", path: "/shop" },
     { label: "About", path: "/about" },
     { label: "Blog", path: "/blog" },
     { label: "Contact", path: "/contact" },
@@ -49,7 +79,7 @@ function Header() {
         </div>
       </div>
 
-      <div className="flex items-center h-[58px] px-[38px] bg-white">
+      <div className="flex items-center h-[58px] px-[38px] bg-white relative">
         <Link
           to="/"
           className="text-[24px] leading-[32px] font-bold text-[#252B42] w-[187px]"
@@ -57,8 +87,58 @@ function Header() {
           Bandage
         </Link>
 
-        <nav className="hidden md:flex gap-[15px]">
-          {navLinks.map((link) => (
+        <nav className="hidden md:flex gap-[15px] items-center">
+          <Link
+            to="/"
+            className="text-[14px] leading-[24px] font-bold text-[#737373]"
+          >
+            Home
+          </Link>
+
+          <div className="relative group">
+            <Link
+              to="/shop"
+              className="text-[14px] leading-[24px] font-bold text-[#737373]"
+            >
+              Shop ▾
+            </Link>
+
+            <div className="absolute top-full left-0 hidden group-hover:flex bg-white shadow-lg p-8 gap-16 z-50 min-w-[520px]">
+              <div>
+                <h3 className="text-[#252B42] font-bold mb-4">Kadın</h3>
+
+                <div className="flex flex-col gap-3">
+                  {womenCategories.map((category) => (
+                    <Link
+                      key={category.id}
+                      to={createCategoryPath(category)}
+                      className="text-[#737373] text-[14px] font-bold"
+                    >
+                      {category.title}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-[#252B42] font-bold mb-4">Erkek</h3>
+
+                <div className="flex flex-col gap-3">
+                  {menCategories.map((category) => (
+                    <Link
+                      key={category.id}
+                      to={createCategoryPath(category)}
+                      className="text-[#737373] text-[14px] font-bold"
+                    >
+                      {category.title}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {navLinks.slice(1).map((link) => (
             <Link
               key={link.label}
               to={link.path}
