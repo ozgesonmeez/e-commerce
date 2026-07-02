@@ -3,6 +3,7 @@ import {
   SET_ROLES,
   SET_THEME,
   SET_LANGUAGE,
+  SET_ADDRESS_LIST,
 } from "../actions/clientActions.js";
 
 const initialState = {
@@ -39,6 +40,12 @@ function clientReducer(state = initialState, action) {
         ...state,
         language: action.payload,
       };
+
+      case SET_ADDRESS_LIST:
+  return {
+    ...state,
+    addressList: action.payload,
+  };
 
     default:
       return state;

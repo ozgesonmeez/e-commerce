@@ -4,6 +4,7 @@ export const SET_USER = "SET_USER";
 export const SET_ROLES = "SET_ROLES";
 export const SET_THEME = "SET_THEME";
 export const SET_LANGUAGE = "SET_LANGUAGE";
+export const SET_ADDRESS_LIST = "SET_ADDRESS_LIST";
 
 export const setUser = (user) => ({
   type: SET_USER,
@@ -25,6 +26,11 @@ export const setLanguage = (language) => ({
   payload: language,
 });
 
+export const setAddressList = (addressList) => ({
+  type: SET_ADDRESS_LIST,
+  payload: addressList,
+});
+
 export const fetchRoles = () => {
   return async (dispatch) => {
     try {
@@ -41,11 +47,11 @@ export const loginUser = (formData) => {
     try {
       const response = await api.post("/login", formData);
 
-api.defaults.headers.common["Authorization"] = response.data.token;
+      api.defaults.headers.common["Authorization"] = response.data.token;
 
-dispatch(setUser(response.data));
+      dispatch(setUser(response.data));
 
-return response.data;
+      return response.data;
     } catch (error) {
       throw error;
     }
@@ -73,6 +79,27 @@ export const verifyToken = () => {
       delete api.defaults.headers.common["Authorization"];
 
       dispatch(setUser(null));
+    }
+  };
+};
+
+export const fetchAddressList = () => {
+  return async (dispatch) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        api.defaults.headers.common["Authorization"] = token;
+      }
+
+      const response = await api.get("/user/address");
+
+      dispatch(setAddressList(response.data));
+
+      return response.data;
+    } catch (error) {
+      console.error("Fetch address error:", error);
+      throw error;
     }
   };
 };
