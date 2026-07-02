@@ -9,6 +9,7 @@ import {
   fetchProducts,
   setFilter,
   setSort,
+  setOffset,
 } from "../store/actions/productActions.js";
 
 import cloths1 from "../assets/cloths1.png";
@@ -26,20 +27,32 @@ function ShopPage() {
   const fetchState = useSelector((state) => state.product.fetchState);
   const filter = useSelector((state) => state.product.filter);
   const sort = useSelector((state) => state.product.sort);
+  const limit = useSelector((state) => state.product.limit);
+const offset = useSelector((state) => state.product.offset);
 
   const [filterInput, setFilterInput] = useState(filter);
 
   const categories = [cloths1, cloths2, cloths3, cloths4, cloths5];
 
+  const totalPages = Math.ceil(total / limit);
+const currentPage = Math.floor(offset / limit) + 1;
+
+const handlePageChange = (page) => {
+  const newOffset = (page - 1) * limit;
+  dispatch(setOffset(newOffset));
+};
+
   useEffect(() => {
-    dispatch(
-      fetchProducts({
-        category: categoryId,
-        filter,
-        sort,
-      })
-    );
-  }, [dispatch, categoryId, filter, sort]);
+   dispatch(
+  fetchProducts({
+    category: categoryId,
+    filter,
+    sort,
+    limit,
+    offset,
+  })
+);
+  }, [dispatch, categoryId, filter, sort, limit, offset]);
 
   const handleFilter = () => {
     dispatch(setFilter(filterInput));
@@ -142,6 +155,44 @@ function ShopPage() {
             </div>
           )}
         </div>
+
+        {fetchState === "FETCHED" && totalPages > 1 && (
+  <div className="flex justify-center items-center gap-2 mt-12">
+    <button
+      disabled={currentPage === 1}
+      onClick={() => handlePageChange(currentPage - 1)}
+      className="px-4 py-2 border rounded disabled:opacity-50"
+    >
+      Previous
+    </button>
+
+    {[...Array(totalPages)].slice(0, 5).map((_, index) => {
+      const page = index + 1;
+
+      return (
+        <button
+          key={page}
+          onClick={() => handlePageChange(page)}
+          className={`px-4 py-2 border rounded ${
+            currentPage === page
+              ? "bg-[#23A6F0] text-white"
+              : "bg-white text-[#23A6F0]"
+          }`}
+        >
+          {page}
+        </button>
+      );
+    })}
+
+    <button
+      disabled={currentPage === totalPages}
+      onClick={() => handlePageChange(currentPage + 1)}
+      className="px-4 py-2 border rounded disabled:opacity-50"
+    >
+      Next
+    </button>
+  </div>
+)}
       </section>
     </main>
   );

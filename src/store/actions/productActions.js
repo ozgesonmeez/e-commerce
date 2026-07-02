@@ -68,9 +68,11 @@ export const fetchProducts = (params = {}) => {
 
       const queryParams = new URLSearchParams();
 
-      if (params.category) queryParams.append("category", params.category);
-      if (params.filter) queryParams.append("filter", params.filter);
-      if (params.sort) queryParams.append("sort", params.sort);
+if (params.category) queryParams.append("category", params.category);
+if (params.filter) queryParams.append("filter", params.filter);
+if (params.sort) queryParams.append("sort", params.sort);
+if (params.limit) queryParams.append("limit", params.limit);
+if (params.offset !== undefined) queryParams.append("offset", params.offset);
 
       const queryString = queryParams.toString();
       const url = queryString ? `/products?${queryString}` : "/products";
