@@ -1,3 +1,5 @@
+import api from "../../api/api.js";
+
 export const SET_CART = "SET_CART";
 export const SET_PAYMENT = "SET_PAYMENT";
 export const SET_ADDRESS = "SET_ADDRESS";
@@ -99,5 +101,21 @@ export const toggleCartItem = (productId) => {
     );
 
     dispatch(setCart(updatedCart));
+  };
+};
+
+export const completeOrder = (orderData) => {
+  return async (dispatch) => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      api.defaults.headers.common["Authorization"] = token;
+    }
+
+    const response = await api.post("/order", orderData);
+
+    dispatch(setCart([]));
+
+    return response.data;
   };
 };

@@ -5,6 +5,7 @@ export const SET_ROLES = "SET_ROLES";
 export const SET_THEME = "SET_THEME";
 export const SET_LANGUAGE = "SET_LANGUAGE";
 export const SET_ADDRESS_LIST = "SET_ADDRESS_LIST";
+export const SET_CARD_LIST = "SET_CARD_LIST";
 
 export const setUser = (user) => ({
   type: SET_USER,
@@ -29,6 +30,11 @@ export const setLanguage = (language) => ({
 export const setAddressList = (addressList) => ({
   type: SET_ADDRESS_LIST,
   payload: addressList,
+});
+
+export const setCardList = (cardList) => ({
+  type: SET_CARD_LIST,
+  payload: cardList,
 });
 
 export const fetchRoles = () => {
@@ -101,5 +107,119 @@ export const fetchAddressList = () => {
       console.error("Fetch address error:", error);
       throw error;
     }
+  };
+};
+
+export const addAddress = (addressData) => {
+  return async (dispatch) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        api.defaults.headers.common["Authorization"] = token;
+      }
+
+      await api.post("/user/address", addressData);
+
+      dispatch(fetchAddressList());
+    } catch (error) {
+      console.error("Add address error:", error);
+      throw error;
+    }
+  };
+};
+
+export const deleteAddress = (addressId) => {
+  return async (dispatch) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        api.defaults.headers.common["Authorization"] = token;
+      }
+
+      await api.delete(`/user/address/${addressId}`);
+
+      dispatch(fetchAddressList());
+    } catch (error) {
+      console.error("Delete address error:", error);
+      throw error;
+    }
+  };
+};
+
+export const updateAddress = (addressData) => {
+  return async (dispatch) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        api.defaults.headers.common["Authorization"] = token;
+      }
+
+      await api.put("/user/address", addressData);
+
+      dispatch(fetchAddressList());
+    } catch (error) {
+      console.error("Update address error:", error);
+      throw error;
+    }
+  };
+};
+
+export const fetchCardList = () => {
+  return async (dispatch) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        api.defaults.headers.common["Authorization"] = token;
+      }
+
+      const response = await api.get("/user/card");
+
+      dispatch(setCardList(response.data));
+
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+};
+
+export const addCard = (cardData) => {
+  return async (dispatch) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        api.defaults.headers.common["Authorization"] = token;
+      }
+
+      await api.post("/user/card", cardData);
+
+      dispatch(fetchCardList());
+    } catch (error) {
+      throw error;
+    }
+  };
+};
+export const deleteCard = (cardId) => {
+  return async (dispatch) => {
+    const token = localStorage.getItem("token");
+    if (token) api.defaults.headers.common["Authorization"] = token;
+
+    await api.delete(`/user/card/${cardId}`);
+    dispatch(fetchCardList());
+  };
+};
+
+export const updateCard = (cardData) => {
+  return async (dispatch) => {
+    const token = localStorage.getItem("token");
+    if (token) api.defaults.headers.common["Authorization"] = token;
+
+    await api.put("/user/card", cardData);
+    dispatch(fetchCardList());
   };
 };

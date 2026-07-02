@@ -50,7 +50,7 @@ function OrderSummary() {
       </div>
 
     <button
-  onClick={() => history.push("/order")}
+  onClick={() => history.push("/payment")}
   className="w-full mt-8 bg-[#23A6F0] text-white py-3 rounded-md font-bold hover:bg-[#1b8fd4] transition"
 >
   Create Order

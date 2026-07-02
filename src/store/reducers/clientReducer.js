@@ -4,6 +4,7 @@ import {
   SET_THEME,
   SET_LANGUAGE,
   SET_ADDRESS_LIST,
+  SET_CARD_LIST,
 } from "../actions/clientActions.js";
 
 const initialState = {
@@ -45,6 +46,12 @@ function clientReducer(state = initialState, action) {
   return {
     ...state,
     addressList: action.payload,
+  };
+
+  case SET_CARD_LIST:
+  return {
+    ...state,
+    creditCards: action.payload,
   };
 
     default:
