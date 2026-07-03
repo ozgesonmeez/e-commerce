@@ -17,6 +17,7 @@ import ProductDetailPage from "./pages/ProductDetailPage";
 import CartPage from "./pages/CartPage";
 import OrderPage from "./pages/OrderPage";
 import PaymentPage from "./pages/PaymentPage";
+import PreviousOrdersPage from "./pages/PreviousOrdersPage";
 
 import { verifyToken } from "./store/actions/clientActions.js";
 
@@ -54,6 +55,7 @@ function App() {
 <Route exact path="/order" component={OrderPage} />
 
 <Route exact path="/payment" component={PaymentPage} />
+<Route exact path="/orders" component={PreviousOrdersPage} />
       </Switch>
 
       <Footer />

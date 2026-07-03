@@ -5,6 +5,7 @@ import {
   SET_LANGUAGE,
   SET_ADDRESS_LIST,
   SET_CARD_LIST,
+  SET_ORDERS,
 } from "../actions/clientActions.js";
 
 const initialState = {
@@ -12,6 +13,7 @@ const initialState = {
   addressList: [],
   creditCards: [],
   roles: [],
+  orders: [],
   theme: "",
   language: "",
 };
@@ -46,6 +48,12 @@ function clientReducer(state = initialState, action) {
   return {
     ...state,
     addressList: action.payload,
+  };
+
+  case SET_ORDERS:
+  return {
+    ...state,
+    orders: action.payload,
   };
 
   case SET_CARD_LIST:

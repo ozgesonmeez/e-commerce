@@ -6,6 +6,7 @@ export const SET_THEME = "SET_THEME";
 export const SET_LANGUAGE = "SET_LANGUAGE";
 export const SET_ADDRESS_LIST = "SET_ADDRESS_LIST";
 export const SET_CARD_LIST = "SET_CARD_LIST";
+export const SET_ORDERS = "SET_ORDERS";
 
 export const setUser = (user) => ({
   type: SET_USER,
@@ -30,6 +31,11 @@ export const setLanguage = (language) => ({
 export const setAddressList = (addressList) => ({
   type: SET_ADDRESS_LIST,
   payload: addressList,
+});
+
+export const setOrders = (orders) => ({
+  type: SET_ORDERS,
+  payload: orders,
 });
 
 export const setCardList = (cardList) => ({
@@ -221,5 +227,21 @@ export const updateCard = (cardData) => {
 
     await api.put("/user/card", cardData);
     dispatch(fetchCardList());
+  };
+};
+
+export const fetchOrders = () => {
+  return async (dispatch) => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      api.defaults.headers.common["Authorization"] = token;
+    }
+
+    const response = await api.get("/order");
+
+    dispatch(setOrders(response.data));
+
+    return response.data;
   };
 };

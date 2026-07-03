@@ -154,11 +154,22 @@ function Header() {
 
         <div className="ml-auto hidden md:flex items-center gap-[15px] text-[#23A6F0] text-[14px] leading-[24px] font-bold">
           {user?.name ? (
-            <div className="flex items-center gap-[5px]">
-              <User size={16} />
-              <span>{user.name}</span>
-            </div>
-          ) : (
+  <div className="relative group">
+    <div className="flex items-center gap-[5px] cursor-pointer">
+      <User size={16} />
+      <span>{user.name}</span>
+    </div>
+
+    <div className="absolute right-0 top-full hidden group-hover:flex flex-col bg-white shadow-lg border border-[#E6E6E6] rounded-md min-w-[180px] z-50">
+      <Link
+        to="/orders"
+        className="px-4 py-3 text-[#737373] hover:bg-[#FAFAFA]"
+      >
+        Previous Orders
+      </Link>
+    </div>
+  </div>
+) : (
             <>
               <Link to="/login" className="flex items-center gap-[5px]">
                 <User size={16} />
