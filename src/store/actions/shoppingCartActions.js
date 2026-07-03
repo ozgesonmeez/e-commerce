@@ -3,6 +3,9 @@ import api from "../../api/api.js";
 export const SET_CART = "SET_CART";
 export const SET_PAYMENT = "SET_PAYMENT";
 export const SET_ADDRESS = "SET_ADDRESS";
+export const ADD_TO_FAVORITES = "ADD_TO_FAVORITES";
+export const REMOVE_FROM_FAVORITES = "REMOVE_FROM_FAVORITES";
+
 
 export const setCart = (cart) => ({
   type: SET_CART,
@@ -18,6 +21,29 @@ export const setAddress = (address) => ({
   type: SET_ADDRESS,
   payload: address,
 });
+export const addFavorite = (product) => ({
+  type: ADD_TO_FAVORITES,
+  payload: product,
+});
+
+export const removeFavorite = (productId) => ({
+  type: REMOVE_FROM_FAVORITES,
+  payload: productId,
+});
+
+export const toggleFavorite = (product) => {
+  return (dispatch, getState) => {
+    const favorites = getState().shoppingCart.favorites;
+
+    const isFavorite = favorites.some((item) => item.id === product.id);
+
+    if (isFavorite) {
+      dispatch(removeFavorite(product.id));
+    } else {
+      dispatch(addFavorite(product));
+    }
+  };
+};
 
 export const addToCart = (product) => {
   return (dispatch, getState) => {

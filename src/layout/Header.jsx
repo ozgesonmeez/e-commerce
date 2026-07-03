@@ -7,21 +7,38 @@ import {
   Mail,
   User,
   Menu,
+  Package,
+  LogOut,
 } from "lucide-react";
 import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories } from "../store/actions/productActions.js";
+import { removeFavorite } from "../store/actions/shoppingCartActions.js";
+import { setUser } from "../store/actions/clientActions.js";
+import api from "../api/api.js";
 
 function Header() {
   const dispatch = useDispatch();
+  const history = useHistory();
+
   const [showCart, setShowCart] = useState(false);
+  const [showFavorites, setShowFavorites] = useState(false);
 
   const user = useSelector((state) => state.client.user);
   const categories = useSelector((state) => state.product.categories);
   const cart = useSelector((state) => state.shoppingCart.cart);
+  const favorites = useSelector((state) => state.shoppingCart.favorites);
 
   const cartCount = cart.reduce((total, item) => total + item.count, 0);
+  const favoriteCount = favorites.length;
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    delete api.defaults.headers.common["Authorization"];
+    dispatch(setUser({}));
+    history.push("/login");
+  };
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -45,7 +62,6 @@ function Header() {
   const createCategoryPath = (category) => {
     const genderPath = category.gender === "k" ? "kadin" : "erkek";
     const categoryName = slugify(category.title);
-
     return `/shop/${genderPath}/${categoryName}/${category.id}`;
   };
 
@@ -91,25 +107,18 @@ function Header() {
         </Link>
 
         <nav className="hidden md:flex gap-[15px] items-center">
-          <Link
-            to="/"
-            className="text-[14px] leading-[24px] font-bold text-[#737373]"
-          >
+          <Link to="/" className="text-[14px] leading-[24px] font-bold text-[#737373]">
             Home
           </Link>
 
           <div className="relative group">
-            <Link
-              to="/shop"
-              className="text-[14px] leading-[24px] font-bold text-[#737373]"
-            >
+            <Link to="/shop" className="text-[14px] leading-[24px] font-bold text-[#737373]">
               Shop ▾
             </Link>
 
             <div className="absolute top-full left-0 hidden group-hover:flex bg-white shadow-lg p-8 gap-16 z-50 min-w-[520px]">
               <div>
                 <h3 className="text-[#252B42] font-bold mb-4">Kadın</h3>
-
                 <div className="flex flex-col gap-3">
                   {womenCategories.map((category) => (
                     <Link
@@ -125,7 +134,6 @@ function Header() {
 
               <div>
                 <h3 className="text-[#252B42] font-bold mb-4">Erkek</h3>
-
                 <div className="flex flex-col gap-3">
                   {menCategories.map((category) => (
                     <Link
@@ -154,22 +162,44 @@ function Header() {
 
         <div className="ml-auto hidden md:flex items-center gap-[15px] text-[#23A6F0] text-[14px] leading-[24px] font-bold">
           {user?.name ? (
-  <div className="relative group">
-    <div className="flex items-center gap-[5px] cursor-pointer">
-      <User size={16} />
-      <span>{user.name}</span>
-    </div>
+            <div className="relative group">
+              <div className="flex items-center gap-[5px] cursor-pointer">
+                <User size={16} />
+                <span>{user.name}</span>
+              </div>
 
-    <div className="absolute right-0 top-full hidden group-hover:flex flex-col bg-white shadow-lg border border-[#E6E6E6] rounded-md min-w-[180px] z-50">
-      <Link
-        to="/orders"
-        className="px-4 py-3 text-[#737373] hover:bg-[#FAFAFA]"
-      >
-        Previous Orders
-      </Link>
-    </div>
-  </div>
-) : (
+              <div className="absolute right-0 top-full hidden group-hover:flex flex-col bg-white shadow-lg border border-[#E6E6E6] rounded-md min-w-[230px] z-50 py-2">
+                <div className="px-4 py-3 border-b border-[#E6E6E6]">
+                  <p className="text-[#E77C40] font-bold">{user.name}</p>
+                  <p className="text-[#737373] text-[12px] font-normal">{user.email}</p>
+                </div>
+
+                <Link to="/orders" className="flex items-center gap-3 px-4 py-3 text-[#737373] hover:bg-[#FAFAFA]">
+                  <Package size={16} />
+                  Tüm Siparişlerim
+                </Link>
+
+                <Link to="/profile/personal-info" className="flex items-center gap-3 px-4 py-3 text-[#737373] hover:bg-[#FAFAFA]">
+                  <User size={16} />
+                  Kullanıcı Bilgilerim
+                </Link>
+
+                <Link to="/favorites" className="flex items-center gap-3 px-4 py-3 text-[#737373] hover:bg-[#FAFAFA]">
+                  <Heart size={16} />
+                  Favorilerim
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="flex items-center gap-3 text-left px-4 py-3 text-[#737373] hover:bg-[#FAFAFA]"
+                >
+                  <LogOut size={16} />
+                  Çıkış Yap
+                </button>
+              </div>
+            </div>
+          ) : (
             <>
               <Link to="/login" className="flex items-center gap-[5px]">
                 <User size={16} />
@@ -201,21 +231,14 @@ function Header() {
 
             {showCart && (
               <div className="absolute right-0 top-8 w-[340px] bg-white border border-[#E6E6E6] rounded-lg shadow-lg p-4 z-50 text-[#252B42]">
-                <h3 className="text-[16px] font-bold mb-4">
-                  Shopping Cart
-                </h3>
+                <h3 className="text-[16px] font-bold mb-4">Shopping Cart</h3>
 
                 {cart.length === 0 ? (
-                  <p className="text-[#737373] text-[14px]">
-                    Your cart is empty.
-                  </p>
+                  <p className="text-[#737373] text-[14px]">Your cart is empty.</p>
                 ) : (
                   <div className="flex flex-col gap-4">
                     {cart.map((item) => (
-                      <div
-                        key={item.product.id}
-                        className="flex gap-3 border-b border-[#E6E6E6] pb-3"
-                      >
+                      <div key={item.product.id} className="flex gap-3 border-b border-[#E6E6E6] pb-3">
                         <img
                           src={item.product.images?.[0]?.url}
                           alt={item.product.name}
@@ -243,11 +266,7 @@ function Header() {
                       <span className="text-[#23856D]">
                         $
                         {cart
-                          .reduce(
-                            (total, item) =>
-                              total + item.product.price * item.count,
-                            0
-                          )
+                          .reduce((total, item) => total + item.product.price * item.count, 0)
                           .toFixed(2)}
                       </span>
                     </div>
@@ -265,18 +284,89 @@ function Header() {
             )}
           </div>
 
-          <Heart size={16} />
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowFavorites(!showFavorites)}
+              className="relative cursor-pointer"
+            >
+              <Heart size={16} />
+
+              {favoriteCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+                  {favoriteCount}
+                </span>
+              )}
+            </button>
+
+            {showFavorites && (
+              <div className="absolute right-0 top-8 w-[320px] bg-white border border-[#E6E6E6] rounded-lg shadow-lg p-4 z-50 text-[#252B42]">
+                <h3 className="font-bold mb-4">Favorites</h3>
+
+                {favorites.length === 0 ? (
+                  <p className="text-[#737373] text-sm">No favorite products.</p>
+                ) : (
+                  <div className="flex flex-col gap-4">
+                    {favorites.map((item) => (
+                      <div key={item.id} className="flex gap-3 border-b pb-3">
+                        <img
+                          src={item.images?.[0]?.url}
+                          alt={item.name}
+                          className="w-14 h-16 object-cover"
+                        />
+
+                        <div className="flex-1">
+                          <p className="text-sm font-bold line-clamp-2">{item.name}</p>
+                          <p className="text-[#23856D] font-bold mt-1">${item.price}</p>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => dispatch(removeFavorite(item.id))}
+                          className="text-red-500 text-sm"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+
+                    <Link
+                      to="/favorites"
+                      onClick={() => setShowFavorites(false)}
+                      className="block text-center bg-[#23A6F0] text-white py-3 rounded-[5px] mt-3"
+                    >
+                      View All Favorites
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="ml-auto flex md:hidden items-center gap-6 text-[#252B42]">
-  <Search size={20} />
+          <Search size={20} />
 
-  <Link to="/cart">
-    <ShoppingCart size={20} />
-  </Link>
+          <Link to="/favorites" className="relative">
+            <Heart size={20} />
+            {favoriteCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+                {favoriteCount}
+              </span>
+            )}
+          </Link>
 
-  <Menu size={24} />
-</div>
+          <Link to="/cart" className="relative">
+            <ShoppingCart size={20} />
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-[#E77C40] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
+          </Link>
+
+          <Menu size={24} />
+        </div>
       </div>
     </header>
   );
