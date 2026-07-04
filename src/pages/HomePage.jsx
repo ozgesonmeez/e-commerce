@@ -15,7 +15,7 @@ function HomePage() {
             className="h-[716px] bg-no-repeat bg-center flex items-center"
             style={{
               backgroundImage: `url(${heroImage})`,
-              backgroundSize: "1440px 716px",
+              
             }}
           >
             <div className="w-full px-6 md:px-[60px]">

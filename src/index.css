@@ -44,3 +44,9 @@ img {
 .dropdown-animation {
   animation: dropdownAnimation 180ms ease-out;
 }
+html,
+body,
+#root {
+  width: 100%;
+  overflow-x: hidden;
+}
