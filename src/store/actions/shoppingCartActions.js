@@ -3,9 +3,10 @@ import api from "../../api/api.js";
 export const SET_CART = "SET_CART";
 export const SET_PAYMENT = "SET_PAYMENT";
 export const SET_ADDRESS = "SET_ADDRESS";
+
 export const ADD_TO_FAVORITES = "ADD_TO_FAVORITES";
 export const REMOVE_FROM_FAVORITES = "REMOVE_FROM_FAVORITES";
-
+export const CLEAR_FAVORITES = "CLEAR_FAVORITES";
 
 export const setCart = (cart) => ({
   type: SET_CART,
@@ -21,6 +22,7 @@ export const setAddress = (address) => ({
   type: SET_ADDRESS,
   payload: address,
 });
+
 export const addFavorite = (product) => ({
   type: ADD_TO_FAVORITES,
   payload: product,
@@ -31,10 +33,19 @@ export const removeFavorite = (productId) => ({
   payload: productId,
 });
 
+export const clearFavorites = () => ({
+  type: CLEAR_FAVORITES,
+});
+
+export const clearCart = () => {
+  return (dispatch) => {
+    dispatch(setCart([]));
+  };
+};
+
 export const toggleFavorite = (product) => {
   return (dispatch, getState) => {
-    const favorites = getState().shoppingCart.favorites;
-
+    const favorites = getState().shoppingCart.favorites || [];
     const isFavorite = favorites.some((item) => item.id === product.id);
 
     if (isFavorite) {
@@ -47,7 +58,7 @@ export const toggleFavorite = (product) => {
 
 export const addToCart = (product) => {
   return (dispatch, getState) => {
-    const cart = getState().shoppingCart.cart;
+    const cart = getState().shoppingCart.cart || [];
 
     const existingItem = cart.find(
       (item) => item.product.id === product.id
@@ -78,7 +89,7 @@ export const addToCart = (product) => {
 
 export const increaseCartItem = (productId) => {
   return (dispatch, getState) => {
-    const cart = getState().shoppingCart.cart;
+    const cart = getState().shoppingCart.cart || [];
 
     const updatedCart = cart.map((item) =>
       item.product.id === productId
@@ -92,7 +103,7 @@ export const increaseCartItem = (productId) => {
 
 export const decreaseCartItem = (productId) => {
   return (dispatch, getState) => {
-    const cart = getState().shoppingCart.cart;
+    const cart = getState().shoppingCart.cart || [];
 
     const updatedCart = cart.map((item) =>
       item.product.id === productId && item.count > 1
@@ -106,7 +117,7 @@ export const decreaseCartItem = (productId) => {
 
 export const removeCartItem = (productId) => {
   return (dispatch, getState) => {
-    const cart = getState().shoppingCart.cart;
+    const cart = getState().shoppingCart.cart || [];
 
     const updatedCart = cart.filter(
       (item) => item.product.id !== productId
@@ -118,7 +129,7 @@ export const removeCartItem = (productId) => {
 
 export const toggleCartItem = (productId) => {
   return (dispatch, getState) => {
-    const cart = getState().shoppingCart.cart;
+    const cart = getState().shoppingCart.cart || [];
 
     const updatedCart = cart.map((item) =>
       item.product.id === productId

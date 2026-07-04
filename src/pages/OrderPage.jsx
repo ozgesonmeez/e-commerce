@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { MapPin, Plus, Pencil, Trash2 } from "lucide-react";
 
 import {
   fetchAddressList,
@@ -21,7 +22,9 @@ function OrderPage() {
   const [editingAddress, setEditingAddress] = useState(null);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
 
-  const addressList = useSelector((state) => state.client.addressList);
+  const addressList = useSelector((state) => state.client.addressList || []);
+  const cart = useSelector((state) => state.shoppingCart.cart || []);
+  const selectedAddress = useSelector((state) => state.shoppingCart.address);
 
   const {
     register,
@@ -38,171 +41,227 @@ function OrderPage() {
       return;
     }
 
-    dispatch(fetchAddressList());
-  }, [dispatch, history]);
-
- const onSubmit = async (data) => {
-  try {
-    if (editingAddress) {
-      await dispatch(updateAddress({ ...data, id: editingAddress.id }));
-      toast.success("Address updated successfully!");
-    } else {
-      await dispatch(addAddress(data));
-      toast.success("Address added successfully!");
+    if (cart.length === 0) {
+      history.push("/cart");
+      return;
     }
 
-    reset();
-    setShowForm(false);
-    setEditingAddress(null);
-  } catch (error) {
-    toast.error("Address could not be saved.");
-  }
-};
+    dispatch(fetchAddressList());
+  }, [dispatch, history, cart.length]);
+
+  useEffect(() => {
+    if (selectedAddress?.id) {
+      setSelectedAddressId(selectedAddress.id);
+    }
+  }, [selectedAddress]);
+
+  const onSubmit = async (data) => {
+    try {
+      if (editingAddress) {
+        await dispatch(updateAddress({ ...data, id: editingAddress.id }));
+        toast.success("Adres başarıyla güncellendi!");
+      } else {
+        await dispatch(addAddress(data));
+        toast.success("Adres başarıyla eklendi!");
+      }
+
+      reset();
+      setShowForm(false);
+      setEditingAddress(null);
+    } catch (error) {
+      toast.error("Adres kaydedilemedi.");
+    }
+  };
 
   const handleSelectAddress = (address) => {
     setSelectedAddressId(address.id);
     dispatch(setAddress(address));
   };
-  const handleEditAddress = (address) => {
-  setEditingAddress(address);
-  setShowForm(true);
-  reset(address);
-};
 
-const handleDeleteAddress = async (addressId) => {
-  try {
-    await dispatch(deleteAddress(addressId));
-    toast.success("Address deleted successfully!");
-  } catch (error) {
-    toast.error("Address could not be deleted.");
-  }
-};
+  const handleEditAddress = (address) => {
+    setEditingAddress(address);
+    setShowForm(true);
+    reset(address);
+  };
+
+  const handleDeleteAddress = async (addressId) => {
+    try {
+      await dispatch(deleteAddress(addressId));
+      toast.success("Adres başarıyla silindi!");
+
+      if (selectedAddressId === addressId) {
+        setSelectedAddressId(null);
+        dispatch(setAddress({}));
+      }
+    } catch (error) {
+      toast.error("Adres silinemedi.");
+    }
+  };
 
   return (
-    <main className="bg-[#FAFAFA] py-12">
-      <div className="max-w-[1050px] mx-auto px-4">
-        <h1 className="text-[32px] font-bold text-[#252B42] mb-8">
-          Create Order
-        </h1>
+    <main className="bg-[#FAFAFA] min-h-screen py-8 md:py-12">
+      <div className="max-w-[1120px] mx-auto px-4">
+        <div className="mb-8">
+          <p className="text-[#737373] text-[14px] font-bold">
+            Checkout
+          </p>
+          <h1 className="text-[30px] md:text-[38px] font-bold text-[#252B42] mt-2">
+            Sipariş Oluştur
+          </h1>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8">
-          <div className="bg-white border border-[#E6E6E6] rounded-md p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-[24px] font-bold text-[#252B42]">
-                Step 1 - Address
-              </h2>
+          <div className="bg-white border border-[#E6E6E6] rounded-2xl p-6 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+              <div>
+                <h2 className="text-[24px] font-bold text-[#252B42]">
+                  1. Adım - Teslimat Adresi
+                </h2>
+                <p className="text-[#737373] text-[14px] mt-1">
+                  Siparişinin teslim edileceği adresi seç.
+                </p>
+              </div>
 
               <button
-                onClick={() => setShowForm(!showForm)}
-                className="bg-[#23A6F0] text-white px-5 py-3 rounded-md font-bold"
+                type="button"
+                onClick={() => {
+                  setShowForm(!showForm);
+                  setEditingAddress(null);
+                  reset();
+                }}
+                className="inline-flex items-center justify-center gap-2 bg-[#23A6F0] text-white px-5 py-3 rounded-md font-bold hover:bg-[#1b8fd4] transition"
               >
-                {showForm ? "Close Form" : "Add New Address"}
+                <Plus size={18} />
+                {showForm ? "Formu Kapat" : "Yeni Adres Ekle"}
               </button>
             </div>
 
             {showForm && (
               <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8"
+                className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 bg-[#FAFAFA] border border-[#E6E6E6] rounded-xl p-5"
               >
                 <input
-                  placeholder="Title"
-                  className="border p-3 rounded-md"
-                  {...register("title", { required: "Title is required" })}
+                  placeholder="Adres Başlığı"
+                  className="border border-[#E6E6E6] p-3 rounded-md focus:outline-none focus:border-[#23A6F0]"
+                  {...register("title", { required: "Adres başlığı zorunludur" })}
                 />
 
                 <input
-                  placeholder="Name"
-                  className="border p-3 rounded-md"
-                  {...register("name", { required: "Name is required" })}
+                  placeholder="Ad"
+                  className="border border-[#E6E6E6] p-3 rounded-md focus:outline-none focus:border-[#23A6F0]"
+                  {...register("name", { required: "Ad zorunludur" })}
                 />
 
                 <input
-                  placeholder="Surname"
-                  className="border p-3 rounded-md"
-                  {...register("surname", { required: "Surname is required" })}
+                  placeholder="Soyad"
+                  className="border border-[#E6E6E6] p-3 rounded-md focus:outline-none focus:border-[#23A6F0]"
+                  {...register("surname", { required: "Soyad zorunludur" })}
                 />
 
                 <input
-                  placeholder="Phone"
-                  className="border p-3 rounded-md"
-                  {...register("phone", { required: "Phone is required" })}
+                  placeholder="Telefon"
+                  className="border border-[#E6E6E6] p-3 rounded-md focus:outline-none focus:border-[#23A6F0]"
+                  {...register("phone", { required: "Telefon zorunludur" })}
                 />
 
                 <input
-                  placeholder="City"
-                  className="border p-3 rounded-md"
-                  {...register("city", { required: "City is required" })}
+                  placeholder="Şehir"
+                  className="border border-[#E6E6E6] p-3 rounded-md focus:outline-none focus:border-[#23A6F0]"
+                  {...register("city", { required: "Şehir zorunludur" })}
                 />
 
                 <input
-                  placeholder="District"
-                  className="border p-3 rounded-md"
-                  {...register("district", { required: "District is required" })}
+                  placeholder="İlçe"
+                  className="border border-[#E6E6E6] p-3 rounded-md focus:outline-none focus:border-[#23A6F0]"
+                  {...register("district", { required: "İlçe zorunludur" })}
                 />
 
                 <input
-                  placeholder="Neighborhood"
-                  className="border p-3 rounded-md"
+                  placeholder="Mahalle"
+                  className="border border-[#E6E6E6] p-3 rounded-md focus:outline-none focus:border-[#23A6F0]"
                   {...register("neighborhood", {
-                    required: "Neighborhood is required",
+                    required: "Mahalle zorunludur",
                   })}
                 />
 
                 <textarea
-                  placeholder="Address"
-                  className="border p-3 rounded-md md:col-span-2"
-                  {...register("address", { required: "Address is required" })}
+                  placeholder="Açık Adres"
+                  className="border border-[#E6E6E6] p-3 rounded-md md:col-span-2 focus:outline-none focus:border-[#23A6F0]"
+                  {...register("address", { required: "Adres zorunludur" })}
                 />
+
+                <div className="md:col-span-2">
+                  {Object.values(errors).map((error, index) => (
+                    <p key={index} className="text-red-500 text-sm">
+                      {error.message}
+                    </p>
+                  ))}
+                </div>
 
                 <button
                   type="submit"
-                  className="bg-[#2DC071] text-white py-3 rounded-md font-bold md:col-span-2"
+                  className="bg-[#2DC071] text-white py-3 rounded-md font-bold md:col-span-2 hover:bg-[#26a862] transition"
                 >
-                  Save Address
+                  {editingAddress ? "Adresi Güncelle" : "Adresi Kaydet"}
                 </button>
               </form>
             )}
 
             {addressList.length === 0 ? (
-              <p className="text-[#737373] font-bold">
-                You do not have any saved address.
-              </p>
+              <div className="border border-dashed border-[#BDBDBD] rounded-xl p-8 text-center">
+                <div className="w-16 h-16 rounded-full bg-[#EAF6FF] text-[#23A6F0] mx-auto flex items-center justify-center mb-4">
+                  <MapPin size={30} />
+                </div>
+
+                <p className="text-[#737373] font-bold">
+                  Kayıtlı adresin yok. Devam etmek için yeni adres ekle.
+                </p>
+              </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {addressList.map((address) => (
                   <div
                     key={address.id}
                     onClick={() => handleSelectAddress(address)}
-                    className={`border rounded-md p-5 cursor-pointer bg-[#FAFAFA] ${
+                    className={`border rounded-2xl p-5 cursor-pointer bg-[#FAFAFA] transition hover:shadow-md ${
                       selectedAddressId === address.id
-                        ? "border-[#23A6F0]"
+                        ? "border-[#23A6F0] ring-2 ring-[#EAF6FF]"
                         : "border-[#E6E6E6]"
                     }`}
                   >
-                    <div className="flex justify-end gap-3 mb-3">
-  <button
-    type="button"
-    onClick={(e) => {
-      e.stopPropagation();
-      handleEditAddress(address);
-    }}
-    className="text-[#23A6F0] text-[14px] font-bold"
-  >
-    Edit
-  </button>
+                    <div className="flex justify-between gap-3 mb-3">
+                      <span className="text-[#23A6F0] font-bold text-[13px]">
+                        {selectedAddressId === address.id
+                          ? "Seçili Adres"
+                          : "Adres"}
+                      </span>
 
-  <button
-    type="button"
-    onClick={(e) => {
-      e.stopPropagation();
-      handleDeleteAddress(address.id);
-    }}
-    className="text-red-500 text-[14px] font-bold"
-  >
-    Delete
-  </button>
-</div>
+                      <div className="flex gap-3">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditAddress(address);
+                          }}
+                          className="text-[#23A6F0] hover:scale-110 transition"
+                        >
+                          <Pencil size={17} />
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteAddress(address.id);
+                          }}
+                          className="text-red-500 hover:scale-110 transition"
+                        >
+                          <Trash2 size={17} />
+                        </button>
+                      </div>
+                    </div>
+
                     <h3 className="text-[#252B42] font-bold text-[18px]">
                       {address.title}
                     </h3>
@@ -229,7 +288,22 @@ const handleDeleteAddress = async (addressId) => {
             )}
           </div>
 
-          <OrderSummary />
+          <div className="flex flex-col gap-4">
+            <OrderSummary />
+
+            <button
+              type="button"
+              disabled={!selectedAddressId}
+              onClick={() => history.push("/payment")}
+              className={`w-full py-3 rounded-md font-bold text-white transition ${
+                selectedAddressId
+                  ? "bg-[#23A6F0] hover:bg-[#1b8fd4]"
+                  : "bg-gray-400 cursor-not-allowed"
+              }`}
+            >
+              Ödemeye Geç
+            </button>
+          </div>
         </div>
       </div>
     </main>

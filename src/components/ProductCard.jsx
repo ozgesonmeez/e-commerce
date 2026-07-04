@@ -15,28 +15,22 @@ function ProductCard({
   categoryId = 1,
 }) {
   const dispatch = useDispatch();
+  const favorites = useSelector((state) => state.shoppingCart.favorites || []);
 
-  const favorites = useSelector((state) => state.shoppingCart.favorites);
-
- const product = {
-  id,
-  name: title,
-  title,
-  department,
-  oldPrice,
-  price,
-  gender,
-  categoryName,
-  categoryId,
-  images: [{ url: image }],
-};
+  const product = {
+    id,
+    name: title,
+    title,
+    department,
+    oldPrice,
+    price,
+    gender,
+    categoryName,
+    categoryId,
+    images: [{ url: image }],
+  };
 
   const isFavorite = favorites.some((item) => item.id === id);
-
-  const slug = title
-    ?.toLowerCase()
-    .replaceAll(" ", "-")
-    .replace(/[^\w-]+/g, "");
 
   const handleFavoriteClick = (event) => {
     event.preventDefault();
@@ -54,14 +48,13 @@ function ProductCard({
       >
         <Heart
           size={20}
-          className={isFavorite ? "fill-red-500 text-red-500" : "text-[#252B42]"}
+          className={
+            isFavorite ? "fill-red-500 text-red-500" : "text-[#252B42]"
+          }
         />
       </button>
 
-      <Link
-        to={`/shop/${gender}/${categoryName}/${categoryId}/${slug}/${id}`}
-        className="block cursor-pointer"
-      >
+      <Link to={`/product/${id}`} className="block cursor-pointer">
         <img
           src={image}
           alt={title}
@@ -69,15 +62,21 @@ function ProductCard({
         />
 
         <div className="text-center py-6">
-          <h3 className="text-[#252B42] text-[16px] font-bold">{title}</h3>
+          <h3 className="text-[#252B42] text-[16px] font-bold">
+            {title}
+          </h3>
 
           <p className="text-[#737373] text-[14px] font-bold mt-2">
             {department}
           </p>
 
           <div className="flex justify-center gap-2 mt-2 font-bold">
-            <span className="text-[#BDBDBD] line-through">{oldPrice}</span>
-            <span className="text-[#23856D]">{price}</span>
+            <span className="text-[#BDBDBD] line-through">
+              {oldPrice}
+            </span>
+            <span className="text-[#23856D]">
+              {price}
+            </span>
           </div>
 
           <div className="flex justify-center gap-2 mt-4">

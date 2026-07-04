@@ -4,16 +4,37 @@ import {
   SET_ADDRESS,
   ADD_TO_FAVORITES,
   REMOVE_FROM_FAVORITES,
+  CLEAR_FAVORITES,
 } from "../actions/shoppingCartActions.js";
 
 const getInitialCart = () => {
   const savedCart = localStorage.getItem("cart");
-  return savedCart ? JSON.parse(savedCart) : [];
+
+  if (!savedCart) {
+    return [];
+  }
+
+  try {
+    return JSON.parse(savedCart);
+  } catch {
+    localStorage.removeItem("cart");
+    return [];
+  }
 };
 
 const getInitialFavorites = () => {
   const savedFavorites = localStorage.getItem("favorites");
-  return savedFavorites ? JSON.parse(savedFavorites) : [];
+
+  if (!savedFavorites) {
+    return [];
+  }
+
+  try {
+    return JSON.parse(savedFavorites);
+  } catch {
+    localStorage.removeItem("favorites");
+    return [];
+  }
 };
 
 const initialState = {
@@ -25,13 +46,14 @@ const initialState = {
 
 function shoppingCartReducer(state = initialState, action) {
   switch (action.type) {
-    case SET_CART:
+    case SET_CART: {
       localStorage.setItem("cart", JSON.stringify(action.payload));
 
       return {
         ...state,
         cart: action.payload,
       };
+    }
 
     case ADD_TO_FAVORITES: {
       const isAlreadyFavorite = state.favorites.some(
@@ -62,6 +84,15 @@ function shoppingCartReducer(state = initialState, action) {
       return {
         ...state,
         favorites: updatedFavorites,
+      };
+    }
+
+    case CLEAR_FAVORITES: {
+      localStorage.setItem("favorites", JSON.stringify([]));
+
+      return {
+        ...state,
+        favorites: [],
       };
     }
 

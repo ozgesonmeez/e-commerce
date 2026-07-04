@@ -59,7 +59,10 @@ export const loginUser = (formData) => {
     try {
       const response = await api.post("/login", formData);
 
-      api.defaults.headers.common["Authorization"] = response.data.token;
+      const token = response.data.token;
+
+      localStorage.setItem("token", token);
+      api.defaults.headers.common["Authorization"] = token;
 
       dispatch(setUser(response.data));
 
@@ -75,7 +78,10 @@ export const verifyToken = () => {
     try {
       const token = localStorage.getItem("token");
 
-      if (!token) return;
+      if (!token) {
+        dispatch(setUser({}));
+        return;
+      }
 
       api.defaults.headers.common["Authorization"] = token;
 
@@ -83,14 +89,17 @@ export const verifyToken = () => {
 
       dispatch(setUser(response.data));
 
-      localStorage.setItem("token", response.data.token);
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        api.defaults.headers.common["Authorization"] = response.data.token;
+      }
 
       return response.data;
     } catch (error) {
       localStorage.removeItem("token");
       delete api.defaults.headers.common["Authorization"];
 
-      dispatch(setUser(null));
+      dispatch(setUser({}));
     }
   };
 };
@@ -210,10 +219,14 @@ export const addCard = (cardData) => {
     }
   };
 };
+
 export const deleteCard = (cardId) => {
   return async (dispatch) => {
     const token = localStorage.getItem("token");
-    if (token) api.defaults.headers.common["Authorization"] = token;
+
+    if (token) {
+      api.defaults.headers.common["Authorization"] = token;
+    }
 
     await api.delete(`/user/card/${cardId}`);
     dispatch(fetchCardList());
@@ -223,7 +236,10 @@ export const deleteCard = (cardId) => {
 export const updateCard = (cardData) => {
   return async (dispatch) => {
     const token = localStorage.getItem("token");
-    if (token) api.defaults.headers.common["Authorization"] = token;
+
+    if (token) {
+      api.defaults.headers.common["Authorization"] = token;
+    }
 
     await api.put("/user/card", cardData);
     dispatch(fetchCardList());
