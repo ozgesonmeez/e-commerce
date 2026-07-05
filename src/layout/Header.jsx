@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Search,
+  X,
   ShoppingCart,
   Heart,
   Phone,
@@ -25,9 +26,16 @@ function Header() {
   const [showCart, setShowCart] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+
+  const [searchText, setSearchText] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("search") || "";
+  });
 
   const cartRef = useRef(null);
   const favoritesRef = useRef(null);
+  const searchRef = useRef(null);
 
   const user = useSelector((state) => state.client.user);
   const categories = useSelector((state) => state.product.categories || []);
@@ -71,6 +79,10 @@ function Header() {
       if (favoritesRef.current && !favoritesRef.current.contains(event.target)) {
         setShowFavorites(false);
       }
+
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowSearch(false);
+      }
     };
 
     const handleEscape = (event) => {
@@ -78,6 +90,7 @@ function Header() {
         setShowCart(false);
         setShowFavorites(false);
         setShowMobileMenu(false);
+        setShowSearch(false);
       }
     };
 
@@ -112,6 +125,27 @@ function Header() {
   };
 
   const closeMobileMenu = () => setShowMobileMenu(false);
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+
+    const value = searchText.trim();
+
+    if (value) {
+      history.push(`/shop?search=${encodeURIComponent(value)}`);
+    } else {
+      history.push("/shop");
+    }
+
+    setShowSearch(false);
+    setShowMobileMenu(false);
+  };
+
+  const clearSearch = () => {
+    setSearchText("");
+    history.push("/shop");
+    setShowSearch(false);
+  };
 
   return (
     <header className="w-full font-montserrat bg-white">
@@ -270,10 +304,47 @@ function Header() {
               </>
             )}
 
-            <Search
-              size={16}
-              className="cursor-pointer transition-all duration-200 hover:scale-110"
-            />
+            <div ref={searchRef} className="relative">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowSearch(!showSearch);
+                  setShowCart(false);
+                  setShowFavorites(false);
+                }}
+                className="transition-all duration-200 hover:scale-110"
+              >
+                <Search size={16} />
+              </button>
+
+              {showSearch && (
+                <form
+                  onSubmit={handleSearchSubmit}
+                  className="absolute right-0 top-8 w-[280px] bg-white border border-[#E6E6E6] rounded-lg shadow-xl p-3 z-50 dropdown-animation"
+                >
+                  <div className="relative">
+                    <input
+                      autoFocus
+                      type="text"
+                      value={searchText}
+                      onChange={(e) => setSearchText(e.target.value)}
+                      placeholder="Search products..."
+                      className="w-full border border-[#E6E6E6] rounded-md px-3 py-2 pr-10 text-[#252B42] focus:outline-none focus:border-[#23A6F0]"
+                    />
+
+                    {searchText && (
+                      <button
+                        type="button"
+                        onClick={clearSearch}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#737373] hover:text-red-500 transition"
+                      >
+                        <X size={16} />
+                      </button>
+                    )}
+                  </div>
+                </form>
+              )}
+            </div>
 
             <div ref={cartRef} className="relative">
               <button
@@ -281,6 +352,7 @@ function Header() {
                 onClick={() => {
                   setShowCart(!showCart);
                   setShowFavorites(false);
+                  setShowSearch(false);
                 }}
                 className="relative cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:scale-110"
               >
@@ -358,6 +430,7 @@ function Header() {
                 onClick={() => {
                   setShowFavorites(!showFavorites);
                   setShowCart(false);
+                  setShowSearch(false);
                 }}
                 className="relative cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:scale-110"
               >
@@ -428,10 +501,13 @@ function Header() {
           </div>
 
           <div className="ml-auto flex md:hidden items-center gap-5 text-[#252B42]">
-            <Search
-              size={20}
-              className="cursor-pointer transition-all duration-200 hover:scale-110"
-            />
+            <button
+              type="button"
+              onClick={() => setShowSearch(!showSearch)}
+              className="transition-all duration-200 hover:scale-110"
+            >
+              <Search size={20} />
+            </button>
 
             <Link to="/favorites" className="relative transition-all duration-200 hover:-translate-y-1 hover:scale-110">
               <Heart size={20} />
@@ -461,6 +537,34 @@ function Header() {
           </div>
         </div>
       </div>
+
+      {showSearch && (
+        <form
+          onSubmit={handleSearchSubmit}
+          className="md:hidden bg-white border-t border-[#E6E6E6] px-5 py-4 dropdown-animation"
+        >
+          <div className="relative">
+            <input
+              autoFocus
+              type="text"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              placeholder="Search products..."
+              className="w-full border border-[#E6E6E6] rounded-md px-4 py-3 pr-11 text-[#252B42] focus:outline-none focus:border-[#23A6F0]"
+            />
+
+            {searchText && (
+              <button
+                type="button"
+                onClick={clearSearch}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#737373] hover:text-red-500 transition"
+              >
+                <X size={18} />
+              </button>
+            )}
+          </div>
+        </form>
+      )}
 
       {showMobileMenu && (
         <div className="md:hidden bg-white border-t border-[#E6E6E6] px-5 py-5 flex flex-col gap-4 text-[#737373] font-bold shadow-md dropdown-animation">

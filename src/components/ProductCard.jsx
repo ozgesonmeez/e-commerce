@@ -40,29 +40,33 @@ function ProductCard({
   };
 
   return (
-    <div className="relative w-full sm:w-[239px]">
+    <div className="relative w-full sm:w-[239px] bg-white">
       <button
         type="button"
         onClick={handleFavoriteClick}
-        className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center"
+        className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110"
       >
         <Heart
           size={20}
           className={
-            isFavorite ? "fill-red-500 text-red-500" : "text-[#252B42]"
+            isFavorite
+              ? "fill-red-500 text-red-500"
+              : "text-[#252B42] hover:text-red-500"
           }
         />
       </button>
 
       <Link to={`/product/${id}`} className="block cursor-pointer">
-        <img
-          src={image}
-          alt={title}
-          className="w-full sm:w-[239px] h-[360px] sm:h-[427px] object-cover"
-        />
+        <div className="w-full sm:w-[239px] h-[380px] sm:h-[427px] bg-[#FAFAFA] overflow-hidden">
+          <img
+            src={image}
+            alt={title}
+            className="w-full h-full object-contain sm:object-cover"
+          />
+        </div>
 
-        <div className="text-center py-6">
-          <h3 className="text-[#252B42] text-[16px] font-bold">
+        <div className="text-center py-6 px-2">
+          <h3 className="text-[#252B42] text-[16px] font-bold line-clamp-2">
             {title}
           </h3>
 

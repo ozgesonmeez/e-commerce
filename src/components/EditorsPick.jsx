@@ -15,35 +15,64 @@ function EditorsPick() {
           Problems trying to resolve the conflict between
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-[510px_240px_240px] gap-[30px] mt-[48px]">
-          <div className="relative h-[420px] md:h-[500px] overflow-hidden">
-            <img src={men} alt="Men" className="w-full h-full object-cover" />
-            <div className="absolute bottom-[24px] left-[24px] bg-white px-[36px] py-[12px]">
-              <span className="text-[16px] font-bold text-[#252B42]">MEN</span>
+        <div className="grid grid-cols-1 md:grid-cols-[510px_240px_240px] gap-6 md:gap-[30px] mt-10 md:mt-[48px]">
+          {/* MEN */}
+          <div className="relative h-[500px] md:h-[500px] overflow-hidden rounded-md">
+            <img
+              src={men}
+              alt="Men"
+              className="w-full h-full object-cover object-top"
+            />
+
+            <div className="absolute bottom-6 left-6 bg-white px-9 py-3">
+              <span className="text-[16px] font-bold text-[#252B42]">
+                MEN
+              </span>
             </div>
           </div>
 
-          <div className="relative h-[420px] md:h-[500px] overflow-hidden">
-            <img src={women} alt="Women" className="w-full h-full object-cover" />
-            <div className="absolute bottom-[24px] left-[24px] bg-white px-[28px] py-[12px]">
-              <span className="text-[16px] font-bold text-[#252B42]">WOMEN</span>
+          {/* WOMEN */}
+          <div className="relative h-[500px] md:h-[500px] overflow-hidden rounded-md">
+            <img
+              src={women}
+              alt="Women"
+              className="w-full h-full object-cover object-top"
+            />
+
+            <div className="absolute bottom-6 left-6 bg-white px-8 py-3">
+              <span className="text-[16px] font-bold text-[#252B42]">
+                WOMEN
+              </span>
             </div>
           </div>
 
-          <div className="flex flex-col gap-[30px]">
-            <div className="relative h-[240px] md:h-[235px] overflow-hidden">
-              <img src={accessories} alt="Accessories" className="w-full h-full object-cover" />
-              <div className="absolute bottom-[24px] left-[24px] bg-white px-[20px] py-[12px]">
+          {/* RIGHT */}
+          <div className="flex flex-col gap-6 md:gap-[30px]">
+            <div className="relative h-[235px] overflow-hidden rounded-md">
+              <img
+                src={accessories}
+                alt="Accessories"
+                className="w-full h-full object-cover object-top"
+              />
+
+              <div className="absolute bottom-6 left-6 bg-white px-5 py-3">
                 <span className="text-[16px] font-bold text-[#252B42]">
                   ACCESSORIES
                 </span>
               </div>
             </div>
 
-            <div className="relative h-[240px] md:h-[235px] overflow-hidden">
-              <img src={kids} alt="Kids" className="w-full h-full object-cover" />
-              <div className="absolute bottom-[24px] left-[24px] bg-white px-[28px] py-[12px]">
-                <span className="text-[16px] font-bold text-[#252B42]">KIDS</span>
+            <div className="relative h-[235px] overflow-hidden rounded-md">
+              <img
+                src={kids}
+                alt="Kids"
+                className="w-full h-full object-cover object-top"
+              />
+
+              <div className="absolute bottom-6 left-6 bg-white px-8 py-3">
+                <span className="text-[16px] font-bold text-[#252B42]">
+                  KIDS
+                </span>
               </div>
             </div>
           </div>

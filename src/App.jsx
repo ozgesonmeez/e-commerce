@@ -32,6 +32,8 @@ import OrderSuccessPage from "./pages/OrderSuccessPage";
 import ProfilePage from "./pages/ProfilePage";
 import PersonalInfoPage from "./pages/PersonalInfoPage";
 import SecurityPage from "./pages/SecurityPage";
+import NotFoundPage from "./pages/NotFoundPage";
+
 import ScrollToTopButton from "./components/ScrollToTopButton";
 import { verifyToken } from "./store/actions/clientActions.js";
 
@@ -123,8 +125,11 @@ function App() {
           path="/profile/security"
           component={SecurityPage}
         />
+
+        <Route component={NotFoundPage} />
       </Switch>
-<ScrollToTopButton />
+
+      <ScrollToTopButton />
       <Footer />
 
       <ToastContainer position="top-right" autoClose={5000} />

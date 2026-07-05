@@ -18,6 +18,91 @@ import {
   toggleFavorite,
 } from "../store/actions/shoppingCartActions.js";
 
+function ProductDetailSkeleton() {
+  return (
+    <main className="bg-[#FAFAFA]">
+      <section className="max-w-[1180px] mx-auto px-4 md:px-6 py-8 md:py-14 animate-pulse">
+        <div className="h-4 bg-[#E6E6E6] rounded w-[220px] mb-8"></div>
+        <div className="h-5 bg-[#E6E6E6] rounded w-[90px] mb-6"></div>
+
+        <div className="bg-white border border-[#E6E6E6] rounded-2xl p-4 md:p-8 lg:p-10 grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-8 lg:gap-14 shadow-sm">
+          <div>
+            <div className="bg-[#E6E6E6] rounded-xl h-[360px] md:h-[480px] lg:h-[560px]"></div>
+
+            <div className="grid grid-cols-4 gap-3 mt-4 max-w-[520px]">
+              {[1, 2, 3, 4].map((item) => (
+                <div
+                  key={item}
+                  className="h-[74px] md:h-[88px] rounded-lg bg-[#E6E6E6]"
+                ></div>
+              ))}
+            </div>
+          </div>
+
+          <div className="pt-2 lg:pt-6">
+            <div className="h-4 bg-[#E6E6E6] rounded w-[130px] mb-5"></div>
+            <div className="h-9 bg-[#E6E6E6] rounded w-[85%] mb-4"></div>
+            <div className="h-9 bg-[#E6E6E6] rounded w-[60%] mb-6"></div>
+
+            <div className="flex gap-3 mb-6">
+              <div className="h-4 bg-[#E6E6E6] rounded w-[120px]"></div>
+              <div className="h-4 bg-[#E6E6E6] rounded w-[80px]"></div>
+            </div>
+
+            <div className="h-10 bg-[#E6E6E6] rounded w-[150px] mb-5"></div>
+            <div className="h-4 bg-[#E6E6E6] rounded w-[180px] mb-8"></div>
+
+            <div className="space-y-3 mb-8">
+              <div className="h-4 bg-[#E6E6E6] rounded w-full"></div>
+              <div className="h-4 bg-[#E6E6E6] rounded w-[90%]"></div>
+              <div className="h-4 bg-[#E6E6E6] rounded w-[75%]"></div>
+            </div>
+
+            <div className="border-t border-[#E6E6E6] pt-7">
+              <div className="h-5 bg-[#E6E6E6] rounded w-[70px] mb-3"></div>
+
+              <div className="flex gap-3 mb-7">
+                {[1, 2, 3, 4].map((item) => (
+                  <div
+                    key={item}
+                    className="w-8 h-8 rounded-full bg-[#E6E6E6]"
+                  ></div>
+                ))}
+              </div>
+
+              <div className="h-5 bg-[#E6E6E6] rounded w-[60px] mb-3"></div>
+
+              <div className="flex gap-3 mb-7">
+                {[1, 2, 3, 4, 5].map((item) => (
+                  <div
+                    key={item}
+                    className="w-11 h-10 rounded-md bg-[#E6E6E6]"
+                  ></div>
+                ))}
+              </div>
+
+              <div className="h-5 bg-[#E6E6E6] rounded w-[90px] mb-3"></div>
+
+              <div className="flex gap-4 mb-8">
+                <div className="w-10 h-10 bg-[#E6E6E6] rounded-md"></div>
+                <div className="w-8 h-10 bg-[#E6E6E6] rounded-md"></div>
+                <div className="w-10 h-10 bg-[#E6E6E6] rounded-md"></div>
+              </div>
+
+              <div className="flex gap-3">
+                <div className="h-12 bg-[#E6E6E6] rounded-md w-[160px]"></div>
+                <div className="w-11 h-11 rounded-full bg-[#E6E6E6]"></div>
+                <div className="w-11 h-11 rounded-full bg-[#E6E6E6]"></div>
+                <div className="w-11 h-11 rounded-full bg-[#E6E6E6]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
+
 function ProductDetailPage() {
   const { productId } = useParams();
   const dispatch = useDispatch();
@@ -25,6 +110,7 @@ function ProductDetailPage() {
 
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedSize, setSelectedSize] = useState("M");
+  const [quantity, setQuantity] = useState(1);
 
   const product = useSelector((state) => state.product.selectedProduct);
   const fetchState = useSelector((state) => state.product.fetchState);
@@ -34,6 +120,7 @@ function ProductDetailPage() {
 
   useEffect(() => {
     dispatch(fetchProduct(productId));
+    setQuantity(1);
   }, [dispatch, productId]);
 
   useEffect(() => {
@@ -50,8 +137,11 @@ function ProductDetailPage() {
   };
 
   const handleAddToCart = () => {
-    dispatch(addToCart(product));
-    toast.success("Ürün sepete eklendi!");
+    for (let i = 0; i < quantity; i++) {
+      dispatch(addToCart(product));
+    }
+
+    toast.success(`${quantity} ürün sepete eklendi!`);
   };
 
   const handleFavorite = () => {
@@ -65,31 +155,36 @@ function ProductDetailPage() {
   };
 
   if (fetchState === "FETCHING" || !product || !product.id) {
-    return (
-      <main className="max-w-[1050px] mx-auto px-4 py-20">
-        <p className="text-center text-[#737373] font-bold">
-          Loading product...
-        </p>
-      </main>
-    );
+    return <ProductDetailSkeleton />;
   }
 
   if (fetchState === "FAILED") {
     return (
-      <main className="max-w-[1050px] mx-auto px-4 py-20">
-        <h1 className="text-[32px] font-bold text-[#252B42]">
-          Product Not Found
-        </h1>
+      <main className="bg-[#FAFAFA] min-h-screen px-4 py-20">
+        <div className="max-w-[700px] mx-auto bg-white border border-[#E6E6E6] rounded-2xl p-8 text-center shadow-sm">
+          <h1 className="text-[32px] font-bold text-[#252B42]">
+            Product Not Found
+          </h1>
 
-        <Link to="/shop" className="inline-block mt-6 text-[#23A6F0] font-bold">
-          ← Back to Shop
-        </Link>
+          <Link
+            to="/shop"
+            className="inline-block mt-6 text-[#23A6F0] font-bold"
+          >
+            ← Back to Shop
+          </Link>
+        </div>
       </main>
     );
   }
 
   const images = product.images || [];
-  const stockText = product.stock > 0 ? "Stokta Var" : "Stokta Yok";
+
+  const stockText =
+    product.stock > 10
+      ? "In Stock"
+      : product.stock > 0
+      ? `Only ${product.stock} left`
+      : "Out of Stock";
 
   return (
     <main className="bg-[#FAFAFA]">
@@ -117,7 +212,11 @@ function ProductDetailPage() {
 
         <div className="bg-white border border-[#E6E6E6] rounded-2xl p-4 md:p-8 lg:p-10 grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-8 lg:gap-14 shadow-sm">
           <div>
-            <div className="bg-[#FAFAFA] rounded-xl flex justify-center items-center p-5 h-[360px] md:h-[480px] lg:h-[560px]">
+            <div className="bg-[#FAFAFA] rounded-xl flex justify-center items-center p-5 h-[360px] md:h-[480px] lg:h-[560px] relative">
+              <span className="absolute top-4 left-4 bg-[#E77C40] text-white text-[12px] font-bold px-3 py-1 rounded-full">
+                SALE
+              </span>
+
               <img
                 src={selectedImage || images[0]?.url}
                 alt={product.name}
@@ -177,12 +276,18 @@ function ProductDetailPage() {
             <div className="flex items-center gap-2 mt-3">
               <CheckCircle
                 size={18}
-                className={product.stock > 0 ? "text-[#23856D]" : "text-red-500"}
+                className={
+                  product.stock > 0 ? "text-[#23856D]" : "text-red-500"
+                }
               />
               <p className="text-[#737373] text-[14px] font-bold">
                 Availability:
                 <span className="text-[#23A6F0] ml-2">{stockText}</span>
               </p>
+            </div>
+
+            <div className="mt-5 bg-[#FAFAFA] border border-[#E6E6E6] rounded-xl p-4 text-[#737373] text-[14px]">
+              🚚 Free shipping over $150 · Secure checkout · 14 day returns
             </div>
 
             <p className="mt-7 text-[#737373] text-[14px] md:text-[15px] leading-[25px] max-w-[520px]">
@@ -195,19 +300,19 @@ function ProductDetailPage() {
               <div className="flex gap-3">
                 <button
                   type="button"
-                  className="w-8 h-8 rounded-full bg-[#23A6F0] border-2 border-white shadow"
+                  className="w-8 h-8 rounded-full bg-[#23A6F0] border-2 border-white shadow hover:scale-110 transition"
                 ></button>
                 <button
                   type="button"
-                  className="w-8 h-8 rounded-full bg-[#2DC071] border-2 border-white shadow"
+                  className="w-8 h-8 rounded-full bg-[#2DC071] border-2 border-white shadow hover:scale-110 transition"
                 ></button>
                 <button
                   type="button"
-                  className="w-8 h-8 rounded-full bg-[#E77C40] border-2 border-white shadow"
+                  className="w-8 h-8 rounded-full bg-[#E77C40] border-2 border-white shadow hover:scale-110 transition"
                 ></button>
                 <button
                   type="button"
-                  className="w-8 h-8 rounded-full bg-[#252B42] border-2 border-white shadow"
+                  className="w-8 h-8 rounded-full bg-[#252B42] border-2 border-white shadow hover:scale-110 transition"
                 ></button>
               </div>
 
@@ -219,15 +324,47 @@ function ProductDetailPage() {
                     key={size}
                     type="button"
                     onClick={() => setSelectedSize(size)}
-                    className={`w-11 h-10 rounded-md border font-bold ${
+                    className={`w-11 h-10 rounded-md border font-bold transition ${
                       selectedSize === size
                         ? "bg-[#23A6F0] text-white border-[#23A6F0]"
-                        : "bg-white text-[#252B42] border-[#E6E6E6]"
+                        : "bg-white text-[#252B42] border-[#E6E6E6] hover:border-[#23A6F0]"
                     }`}
                   >
                     {size}
                   </button>
                 ))}
+              </div>
+
+              <div className="mt-7">
+                <p className="text-[#252B42] font-bold mb-3">
+                  Quantity
+                </p>
+
+                <div className="flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      quantity > 1 && setQuantity(quantity - 1)
+                    }
+                    className="w-10 h-10 rounded-md border border-[#E6E6E6] hover:bg-[#FAFAFA] transition"
+                  >
+                    -
+                  </button>
+
+                  <span className="text-[18px] font-bold w-6 text-center">
+                    {quantity}
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      quantity < product.stock && setQuantity(quantity + 1)
+                    }
+                    className="w-10 h-10 rounded-md border border-[#E6E6E6] hover:bg-[#FAFAFA] transition"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-8">
@@ -243,7 +380,7 @@ function ProductDetailPage() {
                 <button
                   type="button"
                   onClick={handleFavorite}
-                  className="w-11 h-11 rounded-full border border-[#E8E8E8] flex items-center justify-center bg-white"
+                  className="w-11 h-11 rounded-full border border-[#E8E8E8] flex items-center justify-center bg-white hover:scale-110 transition"
                 >
                   <Heart
                     size={19}
@@ -258,14 +395,14 @@ function ProductDetailPage() {
                 <button
                   type="button"
                   onClick={handleAddToCart}
-                  className="w-11 h-11 rounded-full border border-[#E8E8E8] flex items-center justify-center bg-white"
+                  className="w-11 h-11 rounded-full border border-[#E8E8E8] flex items-center justify-center bg-white hover:scale-110 transition"
                 >
                   <ShoppingCart size={19} />
                 </button>
 
                 <button
                   type="button"
-                  className="w-11 h-11 rounded-full border border-[#E8E8E8] flex items-center justify-center bg-white"
+                  className="w-11 h-11 rounded-full border border-[#E8E8E8] flex items-center justify-center bg-white hover:scale-110 transition"
                 >
                   <Eye size={19} />
                 </button>
@@ -307,7 +444,9 @@ function ProductDetailPage() {
 
               <div className="flex justify-between py-2 border-b border-[#E6E6E6]">
                 <span className="text-[#737373]">Stock</span>
-                <span className="font-bold text-[#252B42]">{product.stock}</span>
+                <span className="font-bold text-[#252B42]">
+                  {product.stock}
+                </span>
               </div>
 
               <div className="flex justify-between py-2 border-b border-[#E6E6E6]">
@@ -317,10 +456,17 @@ function ProductDetailPage() {
                 </span>
               </div>
 
-              <div className="flex justify-between py-2">
+              <div className="flex justify-between py-2 border-b border-[#E6E6E6]">
                 <span className="text-[#737373]">Selected Size</span>
                 <span className="font-bold text-[#252B42]">
                   {selectedSize}
+                </span>
+              </div>
+
+              <div className="flex justify-between py-2">
+                <span className="text-[#737373]">Quantity</span>
+                <span className="font-bold text-[#252B42]">
+                  {quantity}
                 </span>
               </div>
             </div>

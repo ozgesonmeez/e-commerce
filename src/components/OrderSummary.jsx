@@ -16,9 +16,16 @@ function OrderSummary() {
       return sum + getPriceNumber(item.product.price) * item.count;
     }, 0);
 
-  const shipping = subtotal > 0 ? 29.99 : 0;
+  const shipping =
+    subtotal === 0
+      ? 0
+      : subtotal >= 150
+      ? 0
+      : 29.99;
+
   const discount = subtotal >= 200 ? subtotal * 0.1 : 0;
   const total = subtotal + shipping - discount;
+  const freeShippingRemaining = 150 - subtotal;
 
   const isCartPage = location.pathname === "/cart";
   const isOrderPage = location.pathname === "/order";
@@ -46,9 +53,28 @@ function OrderSummary() {
           <span>${subtotal.toFixed(2)}</span>
         </div>
 
-        <div className="flex justify-between">
-          <span>Shipping</span>
-          <span>${shipping.toFixed(2)}</span>
+        <div>
+          <div className="flex justify-between">
+            <span>Shipping</span>
+
+            {shipping === 0 ? (
+              <span className="text-[#2DC071] font-bold">FREE</span>
+            ) : (
+              <span>${shipping.toFixed(2)}</span>
+            )}
+          </div>
+
+          {subtotal > 0 && subtotal < 150 && (
+            <p className="text-[12px] text-[#737373] mt-2">
+              Add ${freeShippingRemaining.toFixed(2)} more for free shipping.
+            </p>
+          )}
+
+          {subtotal >= 150 && (
+            <p className="text-[12px] text-[#2DC071] font-bold mt-2">
+              Free shipping unlocked!
+            </p>
+          )}
         </div>
 
         <div className="flex justify-between">
