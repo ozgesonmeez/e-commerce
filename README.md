@@ -65,15 +65,15 @@ This project is being developed as part of my software engineering journey to st
 
 ### Home Page
 
-> *(Add screenshot here)*
+
 
 ### Product Detail
 
-> *(Add screenshot here)*
+
 
 ### Shopping Cart
 
-> *(Add screenshot here)*
+
 
 ---
 
