@@ -57,14 +57,16 @@ export const fetchRoles = () => {
 export const loginUser = (formData) => {
   return async (dispatch) => {
     try {
-      const response = await api.post("/login", formData);
+      const response = await api.post("/auth/login", formData);
 
       const token = response.data.token;
+      const user = response.data.user;
 
       localStorage.setItem("token", token);
-      api.defaults.headers.common["Authorization"] = token;
 
-      dispatch(setUser(response.data));
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+      dispatch(setUser(user));
 
       return response.data;
     } catch (error) {
