@@ -1,140 +1,81 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import {
-  BrowserRouter,
-  Route,
-  Switch,
-  Redirect,
-  useLocation,
-} from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+      import { useEffect } from "react";
+      import { useDispatch } from "react-redux";
+      import { BrowserRouter, Route, Switch } from "react-router-dom";
+      import { ToastContainer } from "react-toastify";
+      import "react-toastify/dist/ReactToastify.css";
 
-import Header from "./layout/Header";
-import Footer from "./layout/Footer";
+      import Header from "./layout/Header";
+      import Footer from "./layout/Footer";
 
-import HomePage from "./pages/HomePage";
-import ShopPage from "./pages/ShopPage";
-import AboutPage from "./pages/AboutPage";
-import ContactPage from "./pages/ContactPage";
-import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
-import ProductDetailPage from "./pages/ProductDetailPage";
+      import HomePage from "./pages/HomePage";
+      import ShopPage from "./pages/ShopPage";
+      import AboutPage from "./pages/AboutPage";
+      import ContactPage from "./pages/ContactPage";
+      import LoginPage from "./pages/LoginPage";
+      import SignupPage from "./pages/SignupPage";
+      import ProductDetailPage from "./pages/ProductDetailPage";
+      import CartPage from "./pages/CartPage";
+      import OrderPage from "./pages/OrderPage";
+      import PaymentPage from "./pages/PaymentPage";
+      import PreviousOrdersPage from "./pages/PreviousOrdersPage";
+      import FavoritesPage from "./pages/FavoritesPage";
+      import ProfilePage from "./pages/ProfilePage";
+    import PersonalInfoPage from "./pages/PersonalInfoPage";
+    import SecurityPage from "./pages/SecurityPage";
+    import BlogPage from "./pages/BlogPage.jsx";
+    
 
-import CartPage from "./pages/CartPage";
-import FavoritesPage from "./pages/FavoritesPage";
 
-import OrderPage from "./pages/OrderPage";
-import PaymentPage from "./pages/PaymentPage";
-import PreviousOrdersPage from "./pages/PreviousOrdersPage";
-import OrderSuccessPage from "./pages/OrderSuccessPage";
+      import { verifyToken } from "./store/actions/clientActions.js";
 
-import ProfilePage from "./pages/ProfilePage";
-import PersonalInfoPage from "./pages/PersonalInfoPage";
-import SecurityPage from "./pages/SecurityPage";
-import NotFoundPage from "./pages/NotFoundPage";
+      function App() {
+        const dispatch = useDispatch();
 
-import ScrollToTopButton from "./components/ScrollToTopButton";
-import { verifyToken } from "./store/actions/clientActions.js";
+        useEffect(() => {
+          dispatch(verifyToken());
+        }, [dispatch]);
 
-function ProtectedRoute({ component: Component, ...rest }) {
-  return (
-    <Route
-      {...rest}
-      render={(props) => {
-        const token = localStorage.getItem("token");
+        return (
+          <BrowserRouter>
+            <Header />
 
-        if (!token) {
-          return <Redirect to="/login" />;
-        }
+            <Switch>
+              <Route exact path="/" component={HomePage} />
 
-        return <Component {...props} />;
-      }}
-    />
-  );
-}
+              <Route
+                path="/shop/:gender/:categoryName/:categoryId/:productNameSlug/:productId"
+                component={ProductDetailPage}
+              />
 
-function ScrollToTop() {
-  const { pathname } = useLocation();
+              <Route path="/shop/:gender/:categoryName/:categoryId" component={ShopPage} />
+              <Route exact path="/shop" component={ShopPage} />
 
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }, [pathname]);
+              <Route path="/about" component={AboutPage} />
+              
+      <Route path="/contact" component={ContactPage} />
+      <Route path="/login" component={LoginPage} />
+      <Route path="/signup" component={SignupPage} />
 
-  return null;
-}
+      <Route path="/product/:productId" component={ProductDetailPage} />
 
-function App() {
-  const dispatch = useDispatch();
+      <Route exact path="/cart" component={CartPage} />
 
-  useEffect(() => {
-    dispatch(verifyToken());
-  }, [dispatch]);
+      <Route exact path="/order" component={OrderPage} />
 
-  return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <Header />
+      <Route exact path="/payment" component={PaymentPage} />
+      <Route exact path="/orders" component={PreviousOrdersPage} />
+      <Route exact path="/favorites" component={FavoritesPage} />
+      <Route exact path="/profile" component={ProfilePage} />
+    <Route path="/profile/personal-info" component={PersonalInfoPage} />
+    <Route path="/profile/security" component={SecurityPage} />
+    <Route path="/blog" component={BlogPage} />
 
-      <Switch>
-        <Route exact path="/" component={HomePage} />
+            </Switch>
 
-        <Route
-          path="/shop/:gender/:categoryName/:categoryId/:productNameSlug/:productId"
-          component={ProductDetailPage}
-        />
+            <Footer />
+            <ToastContainer position="top-right" autoClose={5000} />
+          </BrowserRouter>
+        );
+      }
 
-        <Route
-          path="/shop/:gender/:categoryName/:categoryId"
-          component={ShopPage}
-        />
-
-        <Route exact path="/shop" component={ShopPage} />
-
-        <Route
-          exact
-          path="/product/:productId"
-          component={ProductDetailPage}
-        />
-
-        <Route exact path="/about" component={AboutPage} />
-        <Route exact path="/contact" component={ContactPage} />
-
-        <Route exact path="/login" component={LoginPage} />
-        <Route exact path="/signup" component={SignupPage} />
-
-        <Route exact path="/cart" component={CartPage} />
-        <Route exact path="/favorites" component={FavoritesPage} />
-
-        <ProtectedRoute exact path="/order" component={OrderPage} />
-        <ProtectedRoute exact path="/payment" component={PaymentPage} />
-        <ProtectedRoute exact path="/orders" component={PreviousOrdersPage} />
-        <ProtectedRoute exact path="/order-success" component={OrderSuccessPage} />
-
-        <ProtectedRoute exact path="/profile" component={ProfilePage} />
-        <ProtectedRoute
-          exact
-          path="/profile/personal-info"
-          component={PersonalInfoPage}
-        />
-        <ProtectedRoute
-          exact
-          path="/profile/security"
-          component={SecurityPage}
-        />
-
-        <Route component={NotFoundPage} />
-      </Switch>
-
-      <ScrollToTopButton />
-      <Footer />
-
-      <ToastContainer position="top-right" autoClose={5000} />
-    </BrowserRouter>
-  );
-}
-
-export default App;
+      export default App;

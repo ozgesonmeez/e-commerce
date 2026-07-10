@@ -577,6 +577,9 @@ function Header() {
           <Link to="/about" onClick={closeMobileMenu}>
             About
           </Link>
+          <Link to="/blog" onClick={closeMobileMenu}>
+  Blog
+</Link>
           <Link to="/contact" onClick={closeMobileMenu}>
             Contact
           </Link>
