@@ -65,7 +65,7 @@ function SignupPage() {
     try {
       setIsLoading(true);
 
-      await api.post("/signup", formData);
+      await api.post("/auth/register", formData);
 
       toast.success("Hesabını aktifleştirmek için e-postandaki linke tıkla!");
       history.push("/login");

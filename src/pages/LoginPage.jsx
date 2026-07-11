@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { Mail, Lock, LogIn } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { Link, useHistory } from "react-router-dom";
+import {
+  Link,
+  useHistory,
+  useLocation,
+} from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -11,13 +15,18 @@ function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const history = useHistory();
+  const location = useLocation();
   const dispatch = useDispatch();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      rememberMe: false,
+    },
+  });
 
   const onSubmit = async (data) => {
     const loginData = {
@@ -28,13 +37,28 @@ function LoginPage() {
     try {
       setIsLoading(true);
 
-      await dispatch(loginUser(loginData));
+      await dispatch(
+        loginUser(loginData, data.rememberMe)
+      );
 
       toast.success("Giriş başarılı!");
-      history.push("/");
+
+      const previousPath =
+        location.state?.from?.pathname ||
+        location.state?.from ||
+        "/";
+
+      history.replace(previousPath);
     } catch (error) {
-      console.log("Login error:", error);
-      toast.error("Email veya şifre hatalı.");
+      console.error(
+        "Login error:",
+        error.response?.data || error
+      );
+
+      toast.error(
+        error.response?.data?.message ||
+          "Email veya şifre hatalı."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -57,7 +81,10 @@ function LoginPage() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col gap-5"
+        >
           <div>
             <label className="font-bold text-[#252B42] text-[14px]">
               Email
@@ -76,8 +103,10 @@ function LoginPage() {
                 {...register("email", {
                   required: "Email is required",
                   pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: "Please enter a valid email",
+                    value:
+                      /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message:
+                      "Please enter a valid email",
                   },
                 })}
               />
@@ -118,8 +147,11 @@ function LoginPage() {
             )}
           </div>
 
-          <label className="flex items-center gap-2 text-[#737373] text-[14px] font-bold">
-            <input type="checkbox" {...register("rememberMe")} />
+          <label className="flex items-center gap-2 text-[#737373] text-[14px] font-bold cursor-pointer">
+            <input
+              type="checkbox"
+              {...register("rememberMe")}
+            />
             Remember Me
           </label>
 
@@ -132,13 +164,18 @@ function LoginPage() {
                 : "hover:bg-[#1b8fd4] hover:-translate-y-0.5"
             }`}
           >
-            {isLoading ? "Giriş yapılıyor..." : "Login"}
+            {isLoading
+              ? "Giriş yapılıyor..."
+              : "Login"}
           </button>
         </form>
 
         <p className="text-center text-[#737373] text-[14px] mt-6">
           Hesabın yok mu?{" "}
-          <Link to="/signup" className="text-[#23A6F0] font-bold">
+          <Link
+            to="/signup"
+            className="text-[#23A6F0] font-bold"
+          >
             Register
           </Link>
         </p>

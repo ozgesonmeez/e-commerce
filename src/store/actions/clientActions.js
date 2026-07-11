@@ -54,15 +54,18 @@ export const fetchRoles = () => {
   };
 };
 
-export const loginUser = (formData) => {
+export const loginUser = (formData, rememberMe) => {
   return async (dispatch) => {
     try {
       const response = await api.post("/auth/login", formData);
 
-      const token = response.data.token;
-      const user = response.data.user;
+      const { token, user } = response.data;
 
-      localStorage.setItem("token", token);
+      if (rememberMe) {
+        localStorage.setItem("token", token);
+      } else {
+        localStorage.removeItem("token");
+      }
 
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
@@ -77,24 +80,27 @@ export const loginUser = (formData) => {
 
 export const verifyToken = () => {
   return async (dispatch) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      dispatch(setUser({}));
+      return;
+    }
+
     try {
-      const token = localStorage.getItem("token");
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-      if (!token) {
-        dispatch(setUser({}));
-        return;
-      }
+      const response = await api.get("/auth/verify");
 
-      api.defaults.headers.common["Authorization"] = token;
+      const renewedToken = response.data.token;
+      const user = response.data.user;
 
-      const response = await api.get("/verify");
+      dispatch(setUser(user));
 
-      dispatch(setUser(response.data));
+      localStorage.setItem("token", renewedToken);
 
-      if (response.data.token) {
-        localStorage.setItem("token", response.data.token);
-        api.defaults.headers.common["Authorization"] = response.data.token;
-      }
+      api.defaults.headers.common["Authorization"] =
+        `Bearer ${renewedToken}`;
 
       return response.data;
     } catch (error) {
@@ -102,10 +108,14 @@ export const verifyToken = () => {
       delete api.defaults.headers.common["Authorization"];
 
       dispatch(setUser({}));
+
+      console.error(
+        "Token verification failed:",
+        error.response?.data || error
+      );
     }
   };
 };
-
 export const fetchAddressList = () => {
   return async (dispatch) => {
     try {
