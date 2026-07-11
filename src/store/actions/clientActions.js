@@ -44,12 +44,22 @@ export const setCardList = (cardList) => ({
 });
 
 export const fetchRoles = () => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const roles = getState().client.roles || [];
+
+    if (roles.length > 0) {
+      return roles;
+    }
+
     try {
       const response = await api.get("/roles");
+
       dispatch(setRoles(response.data));
+
+      return response.data;
     } catch (error) {
-      console.error(error);
+      console.error("Fetch roles error:", error);
+      throw error;
     }
   };
 };
@@ -66,8 +76,6 @@ export const loginUser = (formData, rememberMe) => {
       } else {
         localStorage.removeItem("token");
       }
-
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
       dispatch(setUser(user));
 
@@ -88,25 +96,17 @@ export const verifyToken = () => {
     }
 
     try {
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
       const response = await api.get("/auth/verify");
 
       const renewedToken = response.data.token;
       const user = response.data.user;
 
-      dispatch(setUser(user));
-
       localStorage.setItem("token", renewedToken);
-
-      api.defaults.headers.common["Authorization"] =
-        `Bearer ${renewedToken}`;
+      dispatch(setUser(user));
 
       return response.data;
     } catch (error) {
       localStorage.removeItem("token");
-      delete api.defaults.headers.common["Authorization"];
-
       dispatch(setUser({}));
 
       console.error(
@@ -116,15 +116,10 @@ export const verifyToken = () => {
     }
   };
 };
+
 export const fetchAddressList = () => {
   return async (dispatch) => {
     try {
-      const token = localStorage.getItem("token");
-
-      if (token) {
-        api.defaults.headers.common["Authorization"] = token;
-      }
-
       const response = await api.get("/user/address");
 
       dispatch(setAddressList(response.data));
@@ -140,15 +135,11 @@ export const fetchAddressList = () => {
 export const addAddress = (addressData) => {
   return async (dispatch) => {
     try {
-      const token = localStorage.getItem("token");
+      const response = await api.post("/user/address", addressData);
 
-      if (token) {
-        api.defaults.headers.common["Authorization"] = token;
-      }
+      await dispatch(fetchAddressList());
 
-      await api.post("/user/address", addressData);
-
-      dispatch(fetchAddressList());
+      return response.data;
     } catch (error) {
       console.error("Add address error:", error);
       throw error;
@@ -159,15 +150,9 @@ export const addAddress = (addressData) => {
 export const deleteAddress = (addressId) => {
   return async (dispatch) => {
     try {
-      const token = localStorage.getItem("token");
-
-      if (token) {
-        api.defaults.headers.common["Authorization"] = token;
-      }
-
       await api.delete(`/user/address/${addressId}`);
 
-      dispatch(fetchAddressList());
+      await dispatch(fetchAddressList());
     } catch (error) {
       console.error("Delete address error:", error);
       throw error;
@@ -178,15 +163,11 @@ export const deleteAddress = (addressId) => {
 export const updateAddress = (addressData) => {
   return async (dispatch) => {
     try {
-      const token = localStorage.getItem("token");
+      const response = await api.put("/user/address", addressData);
 
-      if (token) {
-        api.defaults.headers.common["Authorization"] = token;
-      }
+      await dispatch(fetchAddressList());
 
-      await api.put("/user/address", addressData);
-
-      dispatch(fetchAddressList());
+      return response.data;
     } catch (error) {
       console.error("Update address error:", error);
       throw error;
@@ -197,19 +178,14 @@ export const updateAddress = (addressData) => {
 export const fetchCardList = () => {
   return async (dispatch) => {
     try {
-      const token = localStorage.getItem("token");
-
-      if (token) {
-        api.defaults.headers.common["Authorization"] = token;
-      }
-
       const response = await api.get("/user/card");
 
       dispatch(setCardList(response.data));
 
       return response.data;
     } catch (error) {
-      console.error(error);
+      console.error("Fetch cards error:", error);
+      throw error;
     }
   };
 };
@@ -217,16 +193,13 @@ export const fetchCardList = () => {
 export const addCard = (cardData) => {
   return async (dispatch) => {
     try {
-      const token = localStorage.getItem("token");
+      const response = await api.post("/user/card", cardData);
 
-      if (token) {
-        api.defaults.headers.common["Authorization"] = token;
-      }
+      await dispatch(fetchCardList());
 
-      await api.post("/user/card", cardData);
-
-      dispatch(fetchCardList());
+      return response.data;
     } catch (error) {
+      console.error("Add card error:", error);
       throw error;
     }
   };
@@ -234,42 +207,43 @@ export const addCard = (cardData) => {
 
 export const deleteCard = (cardId) => {
   return async (dispatch) => {
-    const token = localStorage.getItem("token");
+    try {
+      await api.delete(`/user/card/${cardId}`);
 
-    if (token) {
-      api.defaults.headers.common["Authorization"] = token;
+      await dispatch(fetchCardList());
+    } catch (error) {
+      console.error("Delete card error:", error);
+      throw error;
     }
-
-    await api.delete(`/user/card/${cardId}`);
-    dispatch(fetchCardList());
   };
 };
 
 export const updateCard = (cardData) => {
   return async (dispatch) => {
-    const token = localStorage.getItem("token");
+    try {
+      const response = await api.put("/user/card", cardData);
 
-    if (token) {
-      api.defaults.headers.common["Authorization"] = token;
+      await dispatch(fetchCardList());
+
+      return response.data;
+    } catch (error) {
+      console.error("Update card error:", error);
+      throw error;
     }
-
-    await api.put("/user/card", cardData);
-    dispatch(fetchCardList());
   };
 };
 
 export const fetchOrders = () => {
   return async (dispatch) => {
-    const token = localStorage.getItem("token");
+    try {
+      const response = await api.get("/order");
 
-    if (token) {
-      api.defaults.headers.common["Authorization"] = token;
+      dispatch(setOrders(response.data));
+
+      return response.data;
+    } catch (error) {
+      console.error("Fetch orders error:", error);
+      throw error;
     }
-
-    const response = await api.get("/order");
-
-    dispatch(setOrders(response.data));
-
-    return response.data;
   };
 };

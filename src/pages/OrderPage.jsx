@@ -165,11 +165,19 @@ function OrderPage() {
                   {...register("phone", { required: "Telefon zorunludur" })}
                 />
 
-                <input
-                  placeholder="Şehir"
-                  className="border border-[#E6E6E6] p-3 rounded-md focus:outline-none focus:border-[#23A6F0]"
-                  {...register("city", { required: "Şehir zorunludur" })}
-                />
+              <select
+  className="border border-[#E6E6E6] p-3 rounded-md bg-white focus:outline-none focus:border-[#23A6F0]"
+  {...register("city", {
+    required: "Şehir zorunludur",
+  })}
+>
+  <option value="">Şehir Seçiniz</option>
+  <option value="istanbul">İstanbul</option>
+  <option value="ankara">Ankara</option>
+  <option value="izmir">İzmir</option>
+  <option value="bursa">Bursa</option>
+  <option value="antalya">Antalya</option>
+</select>
 
                 <input
                   placeholder="İlçe"
@@ -177,19 +185,15 @@ function OrderPage() {
                   {...register("district", { required: "İlçe zorunludur" })}
                 />
 
-                <input
-                  placeholder="Mahalle"
-                  className="border border-[#E6E6E6] p-3 rounded-md focus:outline-none focus:border-[#23A6F0]"
-                  {...register("neighborhood", {
-                    required: "Mahalle zorunludur",
-                  })}
-                />
-
                 <textarea
-                  placeholder="Açık Adres"
-                  className="border border-[#E6E6E6] p-3 rounded-md md:col-span-2 focus:outline-none focus:border-[#23A6F0]"
-                  {...register("address", { required: "Adres zorunludur" })}
-                />
+  placeholder="Mahalle, sokak, bina ve kapı numarası"
+  className="border border-[#E6E6E6] p-3 rounded-md md:col-span-2 focus:outline-none focus:border-[#23A6F0]"
+  {...register("neighborhood", {
+    required: "Adres detayı zorunludur",
+  })}
+/>
+
+            
 
                 <div className="md:col-span-2">
                   {Object.values(errors).map((error, index) => (
@@ -279,9 +283,7 @@ function OrderPage() {
                       {address.city}
                     </p>
 
-                    <p className="text-[#737373] text-[14px] mt-1">
-                      {address.address}
-                    </p>
+                   
                   </div>
                 ))}
               </div>

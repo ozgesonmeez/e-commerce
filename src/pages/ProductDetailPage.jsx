@@ -137,12 +137,14 @@ function ProductDetailPage() {
   };
 
   const handleAddToCart = () => {
-    for (let i = 0; i < quantity; i++) {
-      dispatch(addToCart(product));
-    }
+  if (!product || product.stock <= 0) {
+    toast.error("Bu ürün stokta bulunmuyor.");
+    return;
+  }
 
-    toast.success(`${quantity} ürün sepete eklendi!`);
-  };
+  dispatch(addToCart(product, quantity));
+  toast.success(`${quantity} ürün sepete eklendi!`);
+};
 
   const handleFavorite = () => {
     dispatch(toggleFavorite(product));

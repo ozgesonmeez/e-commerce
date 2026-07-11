@@ -56,9 +56,12 @@ export const toggleFavorite = (product) => {
   };
 };
 
-export const addToCart = (product) => {
+export const addToCart = (product, quantity = 1) => {
   return (dispatch, getState) => {
     const cart = getState().shoppingCart.cart || [];
+
+    const safeQuantity =
+      Number.isInteger(quantity) && quantity > 0 ? quantity : 1;
 
     const existingItem = cart.find(
       (item) => item.product.id === product.id
@@ -69,14 +72,17 @@ export const addToCart = (product) => {
     if (existingItem) {
       updatedCart = cart.map((item) =>
         item.product.id === product.id
-          ? { ...item, count: item.count + 1 }
+          ? {
+              ...item,
+              count: item.count + safeQuantity,
+            }
           : item
       );
     } else {
       updatedCart = [
         ...cart,
         {
-          count: 1,
+          count: safeQuantity,
           checked: true,
           product,
         },
@@ -86,16 +92,26 @@ export const addToCart = (product) => {
     dispatch(setCart(updatedCart));
   };
 };
-
 export const increaseCartItem = (productId) => {
   return (dispatch, getState) => {
     const cart = getState().shoppingCart.cart || [];
 
-    const updatedCart = cart.map((item) =>
-      item.product.id === productId
-        ? { ...item, count: item.count + 1 }
-        : item
-    );
+    const updatedCart = cart.map((item) => {
+      if (item.product.id !== productId) {
+        return item;
+      }
+
+      const stock = Number(item.product.stock);
+
+      if (Number.isFinite(stock) && item.count >= stock) {
+        return item;
+      }
+
+      return {
+        ...item,
+        count: item.count + 1,
+      };
+    });
 
     dispatch(setCart(updatedCart));
   };
@@ -105,11 +121,13 @@ export const decreaseCartItem = (productId) => {
   return (dispatch, getState) => {
     const cart = getState().shoppingCart.cart || [];
 
-    const updatedCart = cart.map((item) =>
-      item.product.id === productId && item.count > 1
-        ? { ...item, count: item.count - 1 }
-        : item
-    );
+    const updatedCart = cart
+      .map((item) =>
+        item.product.id === productId
+          ? { ...item, count: item.count - 1 }
+          : item
+      )
+      .filter((item) => item.count > 0);
 
     dispatch(setCart(updatedCart));
   };

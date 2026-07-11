@@ -206,7 +206,7 @@ function ShopPage() {
           {fetchState === "FETCHED" && productList.length > 0 && (
             <div className="flex flex-wrap justify-center gap-[30px]">
               {productList.map((product) => (
-               <ProductCard
+              <ProductCard
   key={product.id}
   id={product.id}
   image={product.images?.[0]?.url}
@@ -214,12 +214,9 @@ function ShopPage() {
   department={product.category?.title || "Product"}
   oldPrice={`$${product.price}`}
   price={`$${product.price}`}
+  stock={product.stock}
   gender={product.category?.gender === "k" ? "kadin" : "erkek"}
-  categoryName={
-    product.category?.code ||
-    product.category?.title ||
-    "kategori"
-  }
+  categoryName={product.category?.title || "kategori"}
   categoryId={product.category?.id}
 />
               ))}

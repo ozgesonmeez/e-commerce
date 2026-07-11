@@ -1,7 +1,12 @@
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Heart } from "lucide-react";
-import { toggleFavorite } from "../store/actions/shoppingCartActions.js";
+import { Heart, ShoppingCart } from "lucide-react";
+import { toast } from "react-toastify";
+
+import {
+  addToCart,
+  toggleFavorite,
+} from "../store/actions/shoppingCartActions.js";
 
 function ProductCard({
   id,
@@ -10,25 +15,30 @@ function ProductCard({
   department,
   oldPrice,
   price,
+  stock,
   gender = "kadin",
   categoryName = "urun",
   categoryId = 1,
 }) {
   const dispatch = useDispatch();
-  const favorites = useSelector((state) => state.shoppingCart.favorites || []);
+
+  const favorites = useSelector(
+    (state) => state.shoppingCart.favorites || []
+  );
 
   const product = {
-    id,
-    name: title,
-    title,
-    department,
-    oldPrice,
-    price,
-    gender,
-    categoryName,
-    categoryId,
-    images: [{ url: image }],
-  };
+  id,
+  name: title,
+  title,
+  department,
+  oldPrice,
+  price,
+  stock,
+  gender,
+  categoryName,
+  categoryId,
+  images: [{ url: image }],
+};
 
   const isFavorite = favorites.some((item) => item.id === id);
 
@@ -39,12 +49,24 @@ function ProductCard({
     dispatch(toggleFavorite(product));
   };
 
+  const handleAddToCart = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    dispatch(addToCart(product));
+    toast.success("Ürün sepete eklendi!");
+  };
+
   return (
     <div className="relative w-full sm:w-[239px] bg-white">
+      {/* FAVORITE BUTTON */}
       <button
         type="button"
         onClick={handleFavoriteClick}
-        className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110"
+        aria-label={
+          isFavorite ? "Remove from favorites" : "Add to favorites"
+        }
+        className="absolute top-3 right-3 z-20 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110"
       >
         <Heart
           size={20}
@@ -54,6 +76,16 @@ function ProductCard({
               : "text-[#252B42] hover:text-red-500"
           }
         />
+      </button>
+
+      {/* CART BUTTON */}
+      <button
+        type="button"
+        onClick={handleAddToCart}
+        aria-label="Add to cart"
+        className="absolute top-[60px] right-3 z-20 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-[#252B42] transition-all duration-200 hover:scale-110 hover:text-[#23A6F0]"
+      >
+        <ShoppingCart size={20} />
       </button>
 
       <Link to={`/product/${id}`} className="block cursor-pointer">
@@ -78,16 +110,17 @@ function ProductCard({
             <span className="text-[#BDBDBD] line-through">
               {oldPrice}
             </span>
+
             <span className="text-[#23856D]">
               {price}
             </span>
           </div>
 
           <div className="flex justify-center gap-2 mt-4">
-            <div className="w-4 h-4 rounded-full bg-[#23A6F0]"></div>
-            <div className="w-4 h-4 rounded-full bg-[#23856D]"></div>
-            <div className="w-4 h-4 rounded-full bg-[#E77C40]"></div>
-            <div className="w-4 h-4 rounded-full bg-[#252B42]"></div>
+            <div className="w-4 h-4 rounded-full bg-[#23A6F0]" />
+            <div className="w-4 h-4 rounded-full bg-[#23856D]" />
+            <div className="w-4 h-4 rounded-full bg-[#E77C40]" />
+            <div className="w-4 h-4 rounded-full bg-[#252B42]" />
           </div>
         </div>
       </Link>
