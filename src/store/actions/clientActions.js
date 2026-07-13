@@ -64,18 +64,17 @@ export const fetchRoles = () => {
   };
 };
 
-export const loginUser = (formData, rememberMe) => {
+export const loginUser = (formData) => {
   return async (dispatch) => {
     try {
-      const response = await api.post("/auth/login", formData);
+      const response = await api.post(
+        "/auth/login",
+        formData
+      );
 
       const { token, user } = response.data;
 
-      if (rememberMe) {
-        localStorage.setItem("token", token);
-      } else {
-        localStorage.removeItem("token");
-      }
+      localStorage.setItem("token", token);
 
       dispatch(setUser(user));
 
