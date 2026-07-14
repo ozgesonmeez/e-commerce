@@ -76,7 +76,7 @@ function ProfilePage() {
       title: "Adreslerim",
       description: `${addressList.length} kayıtlı adres`,
       icon: MapPin,
-      path: "/order",
+      path: "/order?mode=addresses"
     },
     {
       title: "Kullanıcı Bilgilerim",
