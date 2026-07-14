@@ -1,83 +1,178 @@
-# 🛍️ Full Stack E-Commerce Application
+<div align="center">
 
-A modern full-stack e-commerce application built with **React**, **Spring Boot**, and **PostgreSQL**.
+# 🛍️ Full Stack E-Commerce Platform
 
-This project is being developed as part of my software engineering journey to strengthen my full-stack development skills by building a real-world, scalable e-commerce platform.
+### Modern Full Stack E-Commerce Application
+
+Built with **React • Java • Spring Boot • PostgreSQL**
+
+<br>
+
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_Website-4CAF50?style=for-the-badge)](https://e-commerce-72nk.vercel.app)
+
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge&logo=github)](https://github.com/ozgesonmeez/e-commerce)
+
+</div>
 
 ---
 
-# 🚀 Tech Stack
+# 📖 Overview
 
-## Frontend
+This project is a **full-stack e-commerce platform** developed using modern frontend and backend technologies.
 
-- React
-- Redux
-- React Router
-- Tailwind CSS
-- Axios
-- JavaScript (ES6+)
+It provides a complete shopping experience including user authentication, product browsing, shopping cart, favorites, checkout, payment flow, and order management.
 
-## Backend
-
-- Java
-- Spring Boot
-- Spring Data JPA
-- REST APIs
-
-## Database
-
-- PostgreSQL
-
-## Tools
-
-- Git
-- GitHub
-- VS Code
-- IntelliJ IDEA
-- Postman
+The project was built to gain real-world experience with scalable full-stack application development while following clean architecture principles.
 
 ---
 
 # ✨ Features
 
+<table>
+<tr>
+<td width="50%">
+
+## 👤 Authentication
+
+- ✅ Register
+- ✅ Login
+- ✅ JWT Authentication
+- ✅ Protected Routes
+
+</td>
+
+<td width="50%">
+
+## 🛒 Shopping
+
+- ✅ Product Listing
+- ✅ Product Details
+- ✅ Categories
+- ✅ Shopping Cart
+- ✅ Favorites
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+## 📦 Checkout
+
+- ✅ Address Management
+- ✅ Payment Step
+- ✅ Order Creation
+- ✅ Previous Orders
+
+</td>
+
+<td>
+
+## ⚙ Backend
+
+- ✅ REST APIs
+- ✅ Spring Boot
+- ✅ PostgreSQL
+- ✅ Spring Data JPA
+- ✅ Layered Architecture
+
+</td>
+</tr>
+</table>
+
+---
+
+# 🛠 Tech Stack
+
+<div align="center">
+
 ### Frontend
 
-- Responsive Design
-- Product Listing
-- Product Detail Page
-- Category Navigation
-- Shopping Cart
-- Favorites
-- Redux State Management
-- Mobile Friendly UI
+<img src="https://skillicons.dev/icons?i=react,redux,js,tailwind,vscode" />
 
 ### Backend
 
-- RESTful API Development
-- PostgreSQL Integration
-- Spring Boot Architecture
-- CRUD Operations
-- JPA & Hibernate
+<img src="https://skillicons.dev/icons?i=java,spring,postgres,git,github,postman" />
+
+</div>
 
 ---
 
-# 📷 Screenshots
+# 📸 Screenshots
 
-### Home Page
+## 🏠 Home
 
-
-
-### Product Detail
-
-
-
-### Shopping Cart
-
-
+<img src="screenshots/home.png" width="900"/>
 
 ---
 
-# 📂 Project Structure
+## 🛍 Shop
+
+<img src="screenshots/shop.png" width="900"/>
+
+---
+
+## 📦 Product Detail
+
+<img src="screenshots/product-detail.png" width="900"/>
+
+---
+
+## ❤️ Favorites
+
+<img src="screenshots/favorites.png" width="900"/>
+
+---
+
+## 🛒 Shopping Cart
+
+<img src="screenshots/cart.png" width="900"/>
+
+---
+
+## 📍 Address
+
+<img src="screenshots/address.png" width="900"/>
+
+---
+
+## 💳 Payment
+
+<img src="screenshots/payment.png" width="900"/>
+
+---
+
+## 📋 Previous Orders
+
+<img src="screenshots/orders.png" width="900"/>
+
+---
+
+# 🏗 Architecture
+
+```
+Frontend (React)
+
+↓
+
+Axios
+
+↓
+
+Spring Boot REST API
+
+↓
+
+Spring Data JPA
+
+↓
+
+PostgreSQL
+```
+
+---
+
+# 📂 Folder Structure
 
 ```
 Frontend
@@ -92,92 +187,103 @@ Frontend
 
 Backend
 │
-├── Controller
-├── Service
-├── Repository
-├── Entity
-├── DTO
 ├── Config
-└── Database
+├── Controller
+├── DTO
+├── Entity
+├── Repository
+├── Security
+├── Service
+└── Exception
 ```
 
 ---
 
-# ⚙️ Installation
+# 🚀 Installation
 
-## Clone Repository
+## Clone
 
 ```bash
 git clone https://github.com/ozgesonmeez/e-commerce.git
 ```
 
+---
+
 ## Frontend
 
 ```bash
-cd e-commerce
 npm install
+
 npm run dev
 ```
+
+---
 
 ## Backend
 
 ```bash
-cd bandage-backend
 ./mvnw spring-boot:run
 ```
 
 ---
 
-# 🛠️ Currently Working On
+# 🌐 Live Demo
 
-- Spring Boot Backend
-- PostgreSQL Integration
-- Authentication
-- Order Management
-- Deployment
-- Backend Architecture Improvements
+## https://e-commerce-72nk.vercel.app
 
 ---
 
-# 📈 Future Improvements
+# 🎯 What I Learned
 
-- JWT Authentication
-- User Profile
+✔ React Architecture
+
+✔ Redux State Management
+
+✔ REST API Development
+
+✔ Spring Boot
+
+✔ JWT Authentication
+
+✔ Spring Data JPA
+
+✔ PostgreSQL
+
+✔ Responsive Design
+
+✔ Clean Code
+
+✔ Git Workflow
+
+✔ Full Stack Development
+
+---
+
+# 🚀 Future Improvements
+
 - Admin Dashboard
-- Payment Integration
-- Docker Support
-- Unit Testing
+- Product Reviews
+- Search & Filtering Improvements
+- Email Verification
+- Password Reset
+- Docker
+- Unit Tests
 - CI/CD Pipeline
-
----
-
-# 📚 What I Learned
-
-During this project I have gained practical experience with:
-
-- React Component Architecture
-- Redux State Management
-- REST API Development
-- Spring Boot
-- PostgreSQL
-- Responsive Design
-- Git & GitHub Workflow
-- Clean Code Principles
 
 ---
 
 # 👩‍💻 About Me
 
-I'm **Özge Sönmez**, a Junior Full Stack Developer passionate about building modern web applications.
+Hi 👋
 
-Currently focused on:
+I'm **Özge Sönmez**, a **Junior Full Stack Developer** passionate about building scalable web applications.
 
-- React
+Currently focused on
+
 - Java
 - Spring Boot
+- React
 - PostgreSQL
-
-I'm continuously improving my backend development skills while building real-world projects.
 
 ---
 
@@ -185,11 +291,20 @@ I'm continuously improving my backend development skills while building real-wor
 
 **LinkedIn**
 
-https://www.linkedin.com/in/ozgesonmezdev/
+https://linkedin.com/in/ozgesonmezdev
 
 **GitHub**
 
 https://github.com/ozgesonmeez
 
+**Email**
+
+ozgesonmez1@outlook.com
+
 ---
-⭐ If you like this project, feel free to star the repository.
+
+<div align="center">
+
+### ⭐ If you like this project, don't forget to leave a star ⭐
+
+</div>
