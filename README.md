@@ -1,19 +1,19 @@
-<div align="center">
+<p align="center">
+  <img src="./banner1.png" alt="Bandage Full Stack E-Commerce Banner" width="100%">
+</p>
+
+<br>
 
 # 🛍️ Full Stack E-Commerce Platform
 
-### Modern Full Stack E-Commerce Application
-
-Built with **React • Java • Spring Boot • PostgreSQL**
-
-<br>
+A modern Full Stack E-Commerce...
 
 [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_Website-4CAF50?style=for-the-badge)](https://e-commerce-72nk.vercel.app)
 
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge&logo=github)](https://github.com/ozgesonmeez/e-commerce)
 
 </div>
-
+ Full Stack E-Commerce Platform
 ---
 
 # 📖 Overview
@@ -96,55 +96,6 @@ The project was built to gain real-world experience with scalable full-stack app
 
 </div>
 
----
-
-# 📸 Screenshots
-
-## 🏠 Home
-
-<img src="screenshots/home.png" width="900"/>
-
----
-
-## 🛍 Shop
-
-<img src="screenshots/shop.png" width="900"/>
-
----
-
-## 📦 Product Detail
-
-<img src="screenshots/product-detail.png" width="900"/>
-
----
-
-## ❤️ Favorites
-
-<img src="screenshots/favorites.png" width="900"/>
-
----
-
-## 🛒 Shopping Cart
-
-<img src="screenshots/cart.png" width="900"/>
-
----
-
-## 📍 Address
-
-<img src="screenshots/address.png" width="900"/>
-
----
-
-## 💳 Payment
-
-<img src="screenshots/payment.png" width="900"/>
-
----
-
-## 📋 Previous Orders
-
-<img src="screenshots/orders.png" width="900"/>
 
 ---
 
