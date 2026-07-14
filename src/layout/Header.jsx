@@ -10,6 +10,7 @@ import {
   Menu,
   Package,
   LogOut,
+  ChevronDown,
 } from "lucide-react";
 import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 import { Link, useHistory } from "react-router-dom";
@@ -27,6 +28,7 @@ function Header() {
   const [showFavorites, setShowFavorites] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [showMobileShop, setShowMobileShop] = useState(false);
 
   const [searchText, setSearchText] = useState(() => {
     const params = new URLSearchParams(window.location.search);
@@ -124,7 +126,10 @@ function Header() {
     return `/shop/${genderPath}/${categoryName}/${category.id}`;
   };
 
-  const closeMobileMenu = () => setShowMobileMenu(false);
+  const closeMobileMenu = () => {
+  setShowMobileMenu(false);
+  setShowMobileShop(false);
+};
 
   const handleSearchSubmit = (event) => {
     event.preventDefault();
@@ -571,9 +576,78 @@ function Header() {
           <Link to="/" onClick={closeMobileMenu}>
             Home
           </Link>
-          <Link to="/shop" onClick={closeMobileMenu}>
-            Shop
-          </Link>
+         <div>
+  <button
+    type="button"
+    onClick={() => setShowMobileShop((current) => !current)}
+    className="w-full flex items-center justify-between text-left"
+  >
+    <span>Shop</span>
+
+    <ChevronDown
+      size={19}
+      className={`transition-transform duration-200 ${
+        showMobileShop ? "rotate-180" : ""
+      }`}
+    />
+  </button>
+
+  {showMobileShop && (
+    <div className="mt-4 ml-3 pl-4 border-l-2 border-[#E6E6E6] flex flex-col gap-5">
+      <Link
+        to="/shop"
+        onClick={closeMobileMenu}
+        className="text-[#23A6F0]"
+      >
+        Tüm Ürünler
+      </Link>
+
+      <div>
+        <p className="text-[#252B42] font-bold mb-3">
+          Kadın
+        </p>
+
+        <div className="flex flex-col gap-3">
+          {womenCategories.map((category) => (
+            <Link
+              key={category.id}
+              to={createCategoryPath(category)}
+              onClick={closeMobileMenu}
+              className="text-[14px] text-[#737373]"
+            >
+              {category.title}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <p className="text-[#252B42] font-bold mb-3">
+          Erkek
+        </p>
+
+        <div className="flex flex-col gap-3">
+          {menCategories.map((category) => (
+            <Link
+              key={category.id}
+              to={createCategoryPath(category)}
+              onClick={closeMobileMenu}
+              className="text-[14px] text-[#737373]"
+            >
+              {category.title}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {categories.length === 0 && (
+        <p className="text-[13px] text-[#737373] font-normal">
+          Kategoriler yükleniyor...
+        </p>
+      )}
+    </div>
+  )}
+</div>
           <Link to="/about" onClick={closeMobileMenu}>
             About
           </Link>
